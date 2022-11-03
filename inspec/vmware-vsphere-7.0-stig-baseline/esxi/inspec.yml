@@ -8,14 +8,14 @@ license: Apache-2.0
 summary: An InSpec Compliance Profile
 version: 1.0.4
 
-
 inputs:
   - name: vmhostName
-    value: "10.50.7.31"
+    value: ""
     type: string
     description: "The ESXi host name to audit"
   - name: cluster
-   value: ""   type: string
+    value: ""
+    type: string
     description: "The ESXi cluster name to audit"
   - name: allesxi
     value: false

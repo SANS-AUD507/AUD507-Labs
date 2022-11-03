@@ -1,7 +1,7 @@
 # ESXi
-vmhostName: ""
+vmhostName: "10.50.7.31"
 cluster: ""
-allesxi: true
+allesxi: false
 exceptionUsers: ""
 syslogServer: "tcp://log.test.local:514"
 adAdminGroup: "MyAdAdminGroup"

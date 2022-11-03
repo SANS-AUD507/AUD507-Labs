@@ -10,12 +10,11 @@ version: 1.0.4
 
 inputs:
   - name: vmhostName
-    value: ""
+    value: "10.50.7.31"
     type: string
     description: "The ESXi host name to audit"
   - name: cluster
-    value: ""
-    type: string
+   value: ""   type: string
     description: "The ESXi cluster name to audit"
   - name: allesxi
     value: false

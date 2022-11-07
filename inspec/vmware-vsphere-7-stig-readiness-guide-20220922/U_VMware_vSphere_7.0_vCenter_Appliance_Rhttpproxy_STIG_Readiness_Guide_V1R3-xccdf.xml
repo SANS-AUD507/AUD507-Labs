@@ -1,0 +1,302 @@
+<?xml version="1.0" encoding="UTF-8"?><?xml-stylesheet type="text/xsl" href="STIG_unclass.xsl"?>
+<Benchmark xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:cpe="http://cpe.mitre.org/language/2.0" xmlns:xhtml="http://www.w3.org/1999/xhtml" xmlns:dsig="http://www.w3.org/2000/09/xmldsig#" xsi:schemaLocation="http://checklists.nist.gov/xccdf/1.1 http://nvd.nist.gov/schema/xccdf-1.1.4.xsdhttp://cpe.mitre.org/dictionary/2.0 http://cpe.mitre.org/files/cpe-dictionary_2.1.xsd" id="vCenter Rhttpproxy" xml:lang="en" xmlns="http://checklists.nist.gov/xccdf/1.1">
+  <status date="2022-05-03">draft</status>
+  <title>VMware vSphere 7.0 vCenter Appliance Rhttpproxy STIG Readiness Guide</title>
+  <description/>
+  <notice id="terms-of-use" xml:lang="en"/>
+  <front-matter xml:lang="en"/>
+  <rear-matter xml:lang="en"/>
+  <reference href="">
+    <dc:publisher/>
+    <dc:source/>
+  </reference>
+  <plain-text id="release-info">Release: 3 Benchmark Date: 3 May 2022</plain-text>
+  <plain-text id="generator">3.2.2.36079</plain-text>
+  <plain-text id="conventionsVersion">1.10.0</plain-text>
+  <version>1</version>
+  <Group id="VCRP-70-000001">
+    <title>SRG-APP-000001-WSR-000001</title>
+    <Rule id="SV-VCRP-70-000001" severity="medium" weight="10.0">
+      <version>VCRP-70-000001</version>
+      <title>Envoy must drop connections to disconnected clients.</title>
+      <description>&lt;VulnDiscussion&gt;Envoy client connections that are established but no longer connected can consume resources that might otherwise be required by active connections. It is a best practice to terminate connections that are no longer connected to an active client.
+
+Envoy is hard coded to drop connections after three minutes of idle time. The absence of any "tcpKeepAliveTimeSec" settings means that this default is effect. This configuration must be verified and maintained.&lt;/VulnDiscussion&gt;&lt;FalsePositives&gt;&lt;/FalsePositives&gt;&lt;FalseNegatives&gt;&lt;/FalseNegatives&gt;&lt;Documentable&gt;false&lt;/Documentable&gt;&lt;Mitigations&gt;&lt;/Mitigations&gt;&lt;SecurityOverrideGuidance&gt;&lt;/SecurityOverrideGuidance&gt;&lt;PotentialImpacts&gt;&lt;/PotentialImpacts&gt;&lt;ThirdPartyTools&gt;&lt;/ThirdPartyTools&gt;&lt;MitigationControl&gt;&lt;/MitigationControl&gt;&lt;Responsibility&gt;&lt;/Responsibility&gt;&lt;IAControls&gt;&lt;/IAControls&gt;</description>
+      <ident system="http://iase.disa.mil/cci">CCI-000054</ident>
+      <fixtext>Navigate to and open:
+
+/etc/vmware-rhttpproxy/config.xml
+
+Locate the &lt;config&gt;/&lt;envoy&gt;/&lt;L4Filter&gt; block and configure &lt;tcpKeepAliveTimeSec&gt; as follows:
+
+&lt;tcpKeepAliveTimeSec&gt;180&lt;/tcpKeepAliveTimeSec&gt;
+
+Restart the service for changes to take effect.
+
+# vmon-cli --restart rhttpproxy</fixtext>
+      <check system="N/A">
+        <check-content>At the command prompt, execute the following command:
+
+# xmllint --xpath '/config/envoy/L4Filter/tcpKeepAliveTimeSec/text()' /etc/vmware-rhttpproxy/config.xml
+
+Expected result:
+
+180
+
+or
+
+XPath set is empty
+
+If the output does not match the expected result, this is a finding.</check-content>
+      </check>
+    </Rule>
+  </Group>
+  <Group id="VCRP-70-000002">
+    <title>SRG-APP-000001-WSR-000001</title>
+    <Rule id="SV-VCRP-70-000002" severity="medium" weight="10.0">
+      <version>VCRP-70-000002</version>
+      <title>Envoy must set a limit on established connections.</title>
+      <description>&lt;VulnDiscussion&gt;Envoy client connections must be limited in order to preserve system resources and to continue servicing connections without interruption. Without a limit, set the system would be vulnerable to a trivial denial of service attack where connections are created en masse and vCenter resources are entirely consumed.
+
+Envoy comes hard coded with a tested and supported value for "maxHttpsConnections" that must be verified and maintained.&lt;/VulnDiscussion&gt;&lt;FalsePositives&gt;&lt;/FalsePositives&gt;&lt;FalseNegatives&gt;&lt;/FalseNegatives&gt;&lt;Documentable&gt;false&lt;/Documentable&gt;&lt;Mitigations&gt;&lt;/Mitigations&gt;&lt;SecurityOverrideGuidance&gt;&lt;/SecurityOverrideGuidance&gt;&lt;PotentialImpacts&gt;&lt;/PotentialImpacts&gt;&lt;ThirdPartyTools&gt;&lt;/ThirdPartyTools&gt;&lt;MitigationControl&gt;&lt;/MitigationControl&gt;&lt;Responsibility&gt;&lt;/Responsibility&gt;&lt;IAControls&gt;&lt;/IAControls&gt;</description>
+      <ident system="http://iase.disa.mil/cci">CCI-000054</ident>
+      <fixtext>Navigate to and open:
+
+/etc/vmware-rhttpproxy/config.xml
+
+Locate the &lt;config&gt;/&lt;envoy&gt;/&lt;L4Filter&gt; block and configure &lt;maxHttpsConnections&gt; as follows:
+
+&lt;maxHttpsConnections&gt;2048&lt;/maxHttpsConnections&gt;
+
+Restart the service for changes to take effect.
+
+# vmon-cli --restart rhttpproxy</fixtext>
+      <check system="N/A">
+        <check-content>At the command prompt, execute the following command:
+
+# xmllint --xpath '/config/envoy/L4Filter/maxHttpsConnections/text()' /etc/vmware-rhttpproxy/config.xml
+
+Expected result:
+
+2048
+
+or
+
+XPath set is empty
+
+If the output does not match the expected result, this is a finding.</check-content>
+      </check>
+    </Rule>
+  </Group>
+  <Group id="VCRP-70-000003">
+    <title>SRG-APP-000014-WSR-000006</title>
+    <Rule id="SV-VCRP-70-000003" severity="medium" weight="10.0">
+      <version>VCRP-70-000003</version>
+      <title>Envoy must be configured to operate in FIPS mode.</title>
+      <description>&lt;VulnDiscussion&gt;Envoy ships with FIPS 140-2 validated OpenSSL cryptographic libraries and is configured by default to run in FIPS mode. This module is used for all crypto operations performed by Envoy including protection of data-in-transit over the client TLS connection.
+
+Satisfies: SRG-APP-000179-WSR-000111, SRG-APP-000179-WSR-000110, SRG-APP-000439-WSR-000188, SRG-APP-000416-WSR-000118&lt;/VulnDiscussion&gt;&lt;FalsePositives&gt;&lt;/FalsePositives&gt;&lt;FalseNegatives&gt;&lt;/FalseNegatives&gt;&lt;Documentable&gt;false&lt;/Documentable&gt;&lt;Mitigations&gt;&lt;/Mitigations&gt;&lt;SecurityOverrideGuidance&gt;&lt;/SecurityOverrideGuidance&gt;&lt;PotentialImpacts&gt;&lt;/PotentialImpacts&gt;&lt;ThirdPartyTools&gt;&lt;/ThirdPartyTools&gt;&lt;MitigationControl&gt;&lt;/MitigationControl&gt;&lt;Responsibility&gt;&lt;/Responsibility&gt;&lt;IAControls&gt;&lt;/IAControls&gt;</description>
+      <ident system="http://iase.disa.mil/cci">CCI-000068</ident>
+      <fixtext>Navigate to and open:
+
+/etc/vmware-rhttpproxy/config.xml
+
+Locate the &lt;config&gt;/&lt;vmacore&gt;/&lt;ssl&gt; block and configure &lt;fips&gt; as follows:
+
+&lt;fips&gt;true&lt;/fips&gt;
+
+Restart the service for changes to take effect.
+
+# vmon-cli --restart rhttpproxy</fixtext>
+      <check system="N/A">
+        <check-content>At the command prompt, execute the following command:
+
+# xmllint --xpath '/config/vmacore/ssl/fips' /etc/vmware-rhttpproxy/config.xml
+
+Expected result:
+
+&lt;fips&gt;true&lt;/fips&gt;
+
+If the output does not match the expected result, this is a finding.</check-content>
+      </check>
+    </Rule>
+  </Group>
+  <Group id="VCRP-70-000004">
+    <title>SRG-APP-000015-WSR-000014</title>
+    <Rule id="SV-VCRP-70-000004" severity="medium" weight="10.0">
+      <version>VCRP-70-000004</version>
+      <title>Envoy must use only TLS 1.2 for the protection of client connections.</title>
+      <description>&lt;VulnDiscussion&gt;Envoy can be configured to support TLS 1.0, 1.1 and 1.2. Due to intrinsic problems in TLS 1.0 and TLS 1.1, they are disabled by default. The &lt;protocol&gt; block in the rhttproxy configuration is commented out by default and this configuration forces TLS 1.2.
+
+The block may also be set to "tls1.2" in certain upgrade scenarios but the effect is the same. Uncommenting the block and enabling older protocols is possible and therefore TLS 1.2 restriction must be verified and maintained.
+
+Satisfies: SRG-APP-000439-WSR-000151, SRG-APP-000439-WSR-000152, SRG-APP-000439-WSR-000156, SRG-APP-000172-WSR-000104, SRG-APP-000442-WSR-000182, SRG-APP-000441-WSR-000181&lt;/VulnDiscussion&gt;&lt;FalsePositives&gt;&lt;/FalsePositives&gt;&lt;FalseNegatives&gt;&lt;/FalseNegatives&gt;&lt;Documentable&gt;false&lt;/Documentable&gt;&lt;Mitigations&gt;&lt;/Mitigations&gt;&lt;SecurityOverrideGuidance&gt;&lt;/SecurityOverrideGuidance&gt;&lt;PotentialImpacts&gt;&lt;/PotentialImpacts&gt;&lt;ThirdPartyTools&gt;&lt;/ThirdPartyTools&gt;&lt;MitigationControl&gt;&lt;/MitigationControl&gt;&lt;Responsibility&gt;&lt;/Responsibility&gt;&lt;IAControls&gt;&lt;/IAControls&gt;</description>
+      <ident system="http://iase.disa.mil/cci">CCI-001453</ident>
+      <fixtext>Navigate to and open:
+
+/etc/vmware-rhttpproxy/config.xml
+
+Locate the &lt;config&gt;/&lt;vmacore&gt;/&lt;ssl&gt; block and configure &lt;protocols&gt; as follows:
+
+&lt;protocols&gt;tls1.2&lt;/protocols&gt;
+
+Restart the service for changes to take effect.
+
+# vmon-cli --restart rhttpproxy</fixtext>
+      <check system="N/A">
+        <check-content>At the command prompt, execute the following command:
+
+# xmllint --xpath '/config/vmacore/ssl/protocols' /etc/vmware-rhttpproxy/config.xml
+
+Expected result:
+
+XPath set is empty
+
+or
+
+&lt;protocols&gt;tls1.2&lt;/protocols&gt;
+
+If the output does not match the expected result, this is a finding.</check-content>
+      </check>
+    </Rule>
+  </Group>
+  <Group id="VCRP-70-000005">
+    <title>SRG-APP-000176-WSR-000096</title>
+    <Rule id="SV-VCRP-70-000005" severity="medium" weight="10.0">
+      <version>VCRP-70-000005</version>
+      <title>The Envoy private key file must be protected from unauthorized access.</title>
+      <description>&lt;VulnDiscussion&gt;Envoy's private key is used to prove the identity of the server to clients and securely exchange the shared secret key used to encrypt communications between the web server and clients.
+
+By gaining access to the private key, an attacker can pretend to be an authorized server and decrypt the TLS traffic between a client and the web server.&lt;/VulnDiscussion&gt;&lt;FalsePositives&gt;&lt;/FalsePositives&gt;&lt;FalseNegatives&gt;&lt;/FalseNegatives&gt;&lt;Documentable&gt;false&lt;/Documentable&gt;&lt;Mitigations&gt;&lt;/Mitigations&gt;&lt;SecurityOverrideGuidance&gt;&lt;/SecurityOverrideGuidance&gt;&lt;PotentialImpacts&gt;&lt;/PotentialImpacts&gt;&lt;ThirdPartyTools&gt;&lt;/ThirdPartyTools&gt;&lt;MitigationControl&gt;&lt;/MitigationControl&gt;&lt;Responsibility&gt;&lt;/Responsibility&gt;&lt;IAControls&gt;&lt;/IAControls&gt;</description>
+      <ident system="http://iase.disa.mil/cci">CCI-000186</ident>
+      <fixtext>At the command prompt, execute the following command(s):
+
+# chmod 600 /etc/vmware-rhttpproxy/ssl/rui.key
+# chown root:root /etc/vmware-rhttpproxy/ssl/rui.key</fixtext>
+      <check system="N/A">
+        <check-content>At the command prompt, execute the following command:
+
+# stat -c "%n permisions are %a, is owned by %U and group owned by %G" /etc/vmware-rhttpproxy/ssl/rui.key
+
+Expected result:
+
+/etc/vmware-rhttpproxy/ssl/rui.key permisions are 600, is owned by root and group owned by root
+
+If the output does not match the expected result, this is a finding.</check-content>
+      </check>
+    </Rule>
+  </Group>
+  <Group id="VCRP-70-000006">
+    <title>SRG-APP-000315-WSR-000003</title>
+    <Rule id="SV-VCRP-70-000006" severity="medium" weight="10.0">
+      <version>VCRP-70-000006</version>
+      <title>Envoy must exclusively use the HTTPS protocol for client connections.</title>
+      <description>&lt;VulnDiscussion&gt;Remotely accessing vCenter via Envoy involves sensitive information going over the wire. To protect the confidentiality and integrity of these communications, Envoy must be configured to use an encrypted session of HTTPS rather than plain-text HTTP. The SSL configuration block inside the rhttproxy configuration must be present and correctly configured in order to safely enable TLS.&lt;/VulnDiscussion&gt;&lt;FalsePositives&gt;&lt;/FalsePositives&gt;&lt;FalseNegatives&gt;&lt;/FalseNegatives&gt;&lt;Documentable&gt;false&lt;/Documentable&gt;&lt;Mitigations&gt;&lt;/Mitigations&gt;&lt;SecurityOverrideGuidance&gt;&lt;/SecurityOverrideGuidance&gt;&lt;PotentialImpacts&gt;&lt;/PotentialImpacts&gt;&lt;ThirdPartyTools&gt;&lt;/ThirdPartyTools&gt;&lt;MitigationControl&gt;&lt;/MitigationControl&gt;&lt;Responsibility&gt;&lt;/Responsibility&gt;&lt;IAControls&gt;&lt;/IAControls&gt;</description>
+      <ident system="http://iase.disa.mil/cci">CCI-002314</ident>
+      <fixtext>Navigate to and open:
+
+/etc/vmware-rhttpproxy/config.xml
+
+Locate the first &lt;ssl&gt; block and set it's content to the following:
+
+&lt;ssl&gt;
+    &lt;!-- The server private key file --&gt;
+    &lt;privateKey&gt;/etc/vmware-rhttpproxy/ssl/rui.key&lt;/privateKey&gt;
+    &lt;!-- The server side certificate file --&gt;
+    &lt;certificate&gt;/etc/vmware-rhttpproxy/ssl/rui.crt&lt;/certificate&gt;
+    &lt;!-- vecs server name. Currently vecs runs on all node types. --&gt;
+    &lt;vecsServerName&gt;localhost&lt;/vecsServerName&gt;
+&lt;/ssl&gt;
+
+Restart the service for changes to take effect.
+
+# vmon-cli --restart rhttpproxy</fixtext>
+      <check system="N/A">
+        <check-content>At the command prompt, execute the following command:
+
+# xmllint --xpath '/config/ssl' /etc/vmware-rhttpproxy/config.xml
+
+Expected result:
+
+&lt;ssl&gt;
+    &lt;!-- The server private key file --&gt;
+    &lt;privateKey&gt;/etc/vmware-rhttpproxy/ssl/rui.key&lt;/privateKey&gt;
+    &lt;!-- The server side certificate file --&gt;
+    &lt;certificate&gt;/etc/vmware-rhttpproxy/ssl/rui.crt&lt;/certificate&gt;
+    &lt;!-- vecs server name. Currently vecs runs on all node types. --&gt;
+    &lt;vecsServerName&gt;localhost&lt;/vecsServerName&gt;
+  &lt;/ssl&gt;
+
+If the output does not match the expected result, this is a finding.</check-content>
+      </check>
+    </Rule>
+  </Group>
+  <Group id="VCRP-70-000007">
+    <title>SRG-APP-000358-WSR-000063</title>
+    <Rule id="SV-VCRP-70-000007" severity="medium" weight="10.0">
+      <version>VCRP-70-000007</version>
+      <title>Envoy (rhttpproxy) log files must be shipped via syslog to a central log server.</title>
+      <description>&lt;VulnDiscussion&gt;Envoy produces a handful of logs that must be offloaded from the originating system. This information can then be used for diagnostic purposes, forensics purposes, or other purposes relevant to ensuring the availability and integrity of the hosted application.
+
+Envoy (rhttpproxy) rsyslog configuration is included in the "VMware-visl-integration" package and unpacked to "/etc/vmware-syslog/vmware-services-rhttpproxy.conf". Ensuring that the package hashes are as expected ensures that the shipped rsyslog configuration is present and unmodified.&lt;/VulnDiscussion&gt;&lt;FalsePositives&gt;&lt;/FalsePositives&gt;&lt;FalseNegatives&gt;&lt;/FalseNegatives&gt;&lt;Documentable&gt;false&lt;/Documentable&gt;&lt;Mitigations&gt;&lt;/Mitigations&gt;&lt;SecurityOverrideGuidance&gt;&lt;/SecurityOverrideGuidance&gt;&lt;PotentialImpacts&gt;&lt;/PotentialImpacts&gt;&lt;ThirdPartyTools&gt;&lt;/ThirdPartyTools&gt;&lt;MitigationControl&gt;&lt;/MitigationControl&gt;&lt;Responsibility&gt;&lt;/Responsibility&gt;&lt;IAControls&gt;&lt;/IAControls&gt;</description>
+      <ident system="http://iase.disa.mil/cci">CCI-001851</ident>
+      <fixtext>Navigate to and open:
+
+/etc/vmware-syslog/vmware-services-rhttpproxy.conf
+
+Create the file if it does not exist.
+
+Set the contents of the file as follows:
+
+#rhttpproxy log
+input(type="imfile"
+      File="/var/log/vmware/rhttpproxy/rhttpproxy.log"
+      Tag="rhttpproxy-main"
+      Severity="info"
+      Facility="local0")</fixtext>
+      <check system="N/A">
+        <check-content>At the command prompt, execute the following command:
+
+# rpm -V VMware-visl-integration|grep vmware-services-rhttpproxy.conf|grep "^..5......"
+
+If the command returns any output, this is a finding.</check-content>
+      </check>
+    </Rule>
+  </Group>
+  <Group id="VCRP-70-000008">
+    <title>SRG-APP-000358-WSR-000063</title>
+    <Rule id="SV-VCRP-70-000008" severity="medium" weight="10.0">
+      <version>VCRP-70-000008</version>
+      <title>Envoy log files must be shipped via syslog to a central log server.</title>
+      <description>&lt;VulnDiscussion&gt;Envoy rsyslog configuration is included in the "VMware-visl-integration" package and unpacked to "/etc/vmware-syslog/vmware-services-envoy.conf". Ensuring that the package hashes are as expected ensures that the shipped rsyslog configuration is present and unmodified.&lt;/VulnDiscussion&gt;&lt;FalsePositives&gt;&lt;/FalsePositives&gt;&lt;FalseNegatives&gt;&lt;/FalseNegatives&gt;&lt;Documentable&gt;false&lt;/Documentable&gt;&lt;Mitigations&gt;&lt;/Mitigations&gt;&lt;SecurityOverrideGuidance&gt;&lt;/SecurityOverrideGuidance&gt;&lt;PotentialImpacts&gt;&lt;/PotentialImpacts&gt;&lt;ThirdPartyTools&gt;&lt;/ThirdPartyTools&gt;&lt;MitigationControl&gt;&lt;/MitigationControl&gt;&lt;Responsibility&gt;&lt;/Responsibility&gt;&lt;IAControls&gt;&lt;/IAControls&gt;</description>
+      <ident system="http://iase.disa.mil/cci">CCI-001851</ident>
+      <fixtext>Navigate to and open:
+
+/etc/vmware-syslog/vmware-services-envoy.conf
+
+Create the file if it does not exist.
+
+Set the contents of the file as follows:
+
+#envoy service log
+input(type="imfile"
+      File="/var/log/vmware/envoy/envoy.log"
+      Tag="envoy-main"
+      Severity="info"
+      Facility="local0")
+#envoy access log
+input(type="imfile"
+      File="/var/log/vmware/envoy/envoy-access.log"
+      Tag="envoy-access"
+      Severity="info"
+      Facility="local0")</fixtext>
+      <check system="N/A">
+        <check-content>At the command prompt, execute the following command:
+
+# rpm -V VMware-visl-integration|grep vmware-services-envoy.conf|grep "^..5......"
+
+If the command returns any output, this is a finding.</check-content>
+      </check>
+    </Rule>
+  </Group>
+</Benchmark>

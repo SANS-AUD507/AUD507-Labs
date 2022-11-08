@@ -12,14 +12,3 @@ policies:
     - type: has-inline-policy
       value: true  
 
-
-- name: iam-user-single-access-key 
-  resource: aws.iam-user
-  filters:
-      - type: credential
-        key: access_keys.active
-        value: true
-      - type: value
-        key: length("c7n:AccessKeys"[?Status == 'Active'])
-        value: 1
-        op: gt

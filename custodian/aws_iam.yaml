@@ -9,8 +9,7 @@ policies:
 - name: iam-inline-policy
   resource: iam-user
   filters:
-    - type: credential
-      key: has-inline-policy
+    - type: has-inline-policy
       value: true  
 
 

@@ -1,0 +1,12 @@
+policies:
+ - name: azure-ingress-admin-ports-allowed
+   resource: azure.networksecuritygroup
+   filters:
+     - type: ingress
+       ports: '22'
+       access: 'Allow'
+       source: '*'
+     - type: ingress
+       ports: '3389'
+       access: 'Allow'
+       source: '*'

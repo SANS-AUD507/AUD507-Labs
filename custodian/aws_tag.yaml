@@ -1,0 +1,136 @@
+policies:
+
+- name: aws-ebs-tag-compliance
+  resource: ebs
+  filters:
+    - "tag:Business_Unit": absent
+
+- name: aws-ebs-snapshot-tag-compliance
+  resource: ebs-snapshot
+  filters:
+    - "tag:Business_Unit": absent
+
+- name: aws-ec2-tag-compliance
+  resource: ec2
+  filters:
+    - "tag:Business_Unit": absent
+
+- name: aws-ec2-reserved-tag-compliance
+  resource: ec2-reserved
+  filters:
+    - "tag:Business_Unit": absent
+
+- name: aws-elb-tag-compliance
+  resource: elb
+  filters:
+    - "tag:Business_Unit": absent
+
+- name: aws-iam-certificate-tag-compliance
+  resource: iam-certificate
+  filters:
+    - "tag:Business_Unit": absent
+
+- name: aws-iam-group-tag-compliance
+  resource: iam-group
+  filters:
+    - "tag:Business_Unit": absent
+
+- name: aws-iam-policy-tag-compliance
+  resource: iam-policy
+  filters:
+    - "tag:Business_Unit": absent
+
+- name: aws-iam-profile-tag-compliance
+  resource: iam-profile
+  filters:
+    - "tag:Business_Unit": absent
+
+- name: aws-iam-role-tag-compliance
+  resource: iam-role
+  filters:
+    - "tag:Business_Unit": absent
+
+- name: aws-iam-user-tag-compliance
+  resource: iam-user
+  filters:
+    - "tag:Business_Unit": absent
+
+- name: aws-internet-gateway-tag-compliance
+  resource: internet-gateway
+  filters:
+    - "tag:Business_Unit": absent
+
+- name: aws-lambda-tag-compliance
+  resource: lambda
+  filters:
+    - "tag:Business_Unit": absent
+
+- name: aws-nat-gateway-tag-compliance
+  resource: nat-gateway
+  filters:
+    - "tag:Business_Unit": absent
+
+- name: aws-network-acl-tag-compliance
+  resource: network-acl
+  filters:
+    - "tag:Business_Unit": absent
+
+- name: aws-network-addr-tag-compliance
+  resource: network-addr
+  filters:
+    - "tag:Business_Unit": absent
+
+- name: aws-r53domain-tag-compliance
+  resource: r53domain
+  filters:
+    - "tag:Business_Unit": absent
+
+- name: aws-s3-tag-compliance
+  resource: s3
+  filters:
+    - "tag:Business_Unit": absent
+
+- name: aws-security-group-tag-compliance
+  resource: security-group
+  filters:
+    - "tag:Business_Unit": absent
+
+- name: aws-sns-tag-compliance
+  resource: sns
+  filters:
+    - "tag:Business_Unit": absent
+
+- name: aws-subnet-tag-compliance
+  resource: subnet
+  filters:
+    - "tag:Business_Unit": absent
+
+- name: aws-vpc-tag-compliance
+  resource: vpc
+  filters:
+    - "tag:Business_Unit": absent
+
+- name: aws-vpc-endpoint-tag-compliance
+  resource: vpc-endpoint
+  filters:
+    - "tag:Business_Unit": absent
+
+- name: aws-vpn-connection-tag-compliance
+  resource: vpn-connection
+  filters:
+    - "tag:Business_Unit": absent
+
+- name: aws-vpn-gateway-tag-compliance
+  resource: vpn-gateway
+  filters:
+    - "tag:Business_Unit": absent
+
+- name: aws-waf-tag-compliance
+  resource: waf
+  filters:
+    - "tag:Business_Unit": absent
+
+- name: aws-waf-regional-tag-compliance
+  resource: waf-regional
+  filters:
+    - "tag:Business_Unit": absent

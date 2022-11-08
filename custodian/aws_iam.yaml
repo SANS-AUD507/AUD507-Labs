@@ -1,0 +1,25 @@
+- name: iam-no-mfa
+  resource: iam-user
+  filters:
+    - type: credential
+      key: mfa_active
+      value: false
+
+- name: iam-inline-policy
+  resource: iam-user
+  filters:
+    - type: credential
+      key: has-inline-policy
+      value: true  
+
+policies:
+- name: iam-user-single-access-key 
+  resource: aws.iam-user
+  filters:
+      - type: credential
+        key: access_keys.active
+        value: true
+      - type: value
+        key: length("c7n:AccessKeys"[?Status == 'Active'])
+        value: 1
+        op: gt

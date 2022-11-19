@@ -130,3 +130,4 @@ resource "aws_instance" "km_vm"{
     Name = "km_vm_${var.environment}"
   })
 }
+

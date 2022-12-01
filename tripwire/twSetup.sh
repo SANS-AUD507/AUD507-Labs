@@ -29,7 +29,7 @@ EOF'
 sudo chmod +x twconf
 sudo /home/student/twconf
 
-echo "RESOLVE_IDS_TO_NAMES =false" >>  
+echo "RESOLVE_IDS_TO_NAMES =false" >> /home/student/tw.cfg
 sudo cp /home/student/tw.cfg /etc/tripwire
 
 echo '******************************************************'

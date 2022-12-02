@@ -4,6 +4,7 @@ echo 'Admin has downloaded Tripwire and is setting up the site and local keys'
 echo '******************************************************'
 sudo rm -f /etc/tripwire/*.key
 sudo rm -f /etc/tripwire/tw.cfg
+sudo rm -f /var/lib/tripwire/ubuntu.twd
 sudo twadmin --generate-keys -L /etc/tripwire/ubuntu-local.key -S /etc/tripwire/site.key  -P Aud507LocalKey -Q Aud507SiteKey
 sudo cp /home/student/twpol.txt /etc/tripwire/
 
@@ -26,7 +27,7 @@ interact
 exit
 EOF'
 
-sudo chmod +x twconf
+sudo chmod +x /home/student/twconf
 sudo /home/student/twconf
 
 echo "RESOLVE_IDS_TO_NAMES =false" >> /home/student/tw.cfg

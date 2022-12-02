@@ -19,15 +19,13 @@ echo '******************************************************'
 echo 'Admin is building a new configuration file'
 echo '******************************************************'
 
-echo "RESOLVE_IDS_TO_NAMES =false" >> /home/student/twcfg.txt
-
 sudo bash -c 'cat << EOF >/etc/tripwire/twcfg.txt
 ROOT          =/usr/sbin
 POLFILE       =/etc/tripwire/tw.pol
-DBFILE        =/var/lib/tripwire/$(HOSTNAME).twd
-REPORTFILE    =/var/lib/tripwire/report/$(HOSTNAME)-$(DATE).twr
+DBFILE        =/var/lib/tripwire/\$(HOSTNAME).twd
+REPORTFILE    =/var/lib/tripwire/report/\$(HOSTNAME)-\$(DATE).twr
 SITEKEYFILE   =/etc/tripwire/site.key
-LOCALKEYFILE  =/etc/tripwire/$(HOSTNAME)-local.key
+LOCALKEYFILE  =/etc/tripwire/\$(HOSTNAME)-local.key
 EDITOR        =/usr/bin/editor
 LATEPROMPTING =false
 LOOSEDIRECTORYCHECKING =false

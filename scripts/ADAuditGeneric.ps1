@@ -106,35 +106,35 @@ $adAuditResults
 #For each of the measured objects, if it has >0 members, output it to a CSV in the original script directory
 if($DisabledUsers -gt 0)
 {
-  $DisabledUsersList | Export-Csv ".\DisabledUsers.csv"
+  $DisabledUsersList | Export-Csv "$PSScriptRoot\DisabledUsers.csv"
 }
 if( $StalePasswordUsers -gt 0 )
 {
-  $StalePasswordUsersList | Export-Csv ".\StalePasswordUsers.csv"
+  $StalePasswordUsersList | Export-Csv "$PSScriptRoot\StalePasswordUsers.csv"
 }
 if( $InactiveUsers -gt 0 )
 {
-  $InactiveUsersList | Export-Csv ".\InactiveUsers.csv"
+  $InactiveUsersList | Export-Csv "$PSScriptRoot\InactiveUsers.csv"
 }
 if( $DomainAdmins -gt 0 )
 {
-  $DomainAdminsList | Export-Csv ".\DomainAdmins.csv"
+  $DomainAdminsList | Export-Csv "$PSScriptRoot\DomainAdmins.csv"
 }
 if( $SchemaAdmins -gt 0 )
 {
-  $SchemaAdminsList | Export-Csv ".\SchemaAdmins.csv"
+  $SchemaAdminsList | Export-Csv "$PSScriptRoot\SchemaAdmins.csv"
 }
 if( $EnterpriseAdmins -gt 0 )
 {
-  $EnterpriseAdminsList | Export-Csv ".\EnterpriseAdmins.csv"
+  $EnterpriseAdminsList | Export-Csv "$PSScriptRoot\EnterpriseAdmins.csv"
 }
 if( $PasswordNeverExpires -gt 0 )
 {
-  $PasswordNeverExpiresList | Export-Csv ".\NonExpiringPwdUsers.csv"
+  $PasswordNeverExpiresList | Export-Csv "$PSScriptRoot\NonExpiringPwdUsers.csv"
 }
 if( $PasswordNeverSet -gt 0 )
 {
-  $PasswordNeverSetList | Export-Csv ".\PwdNotSetUsers.csv"
+  $PasswordNeverSetList | Export-Csv "$PSScriptRoot\PwdNotSetUsers.csv"
 }
 
 #If the alternate connection was used, then get back to the original location and remove the PS drive

@@ -42,6 +42,7 @@ Describe 'Acceptance Testing for Win10 VM' {
       ### This is a weird one. Windows terminal is installed as a WindowsApp and the version is in the path name :|
       ### To get around this, we look in the WindowsApps folder for any director containing '.WindowsTerminal'
       ### with a file named wt.exe. Once we have that, we make sure that Get-ChildItem returns a count of 1 file found
+      ### ------Ask clay for a way to check version and get checksum?
 
       (Get-ChildItem -Path 'C:\Program Files\WindowsApps\*.WindowsTerminal*\wt.exe').count | Should -Be 1
     }

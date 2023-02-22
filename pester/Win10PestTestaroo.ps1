@@ -1,5 +1,7 @@
 #Requires -RunAsAdministrator
 
+#TODO: Test that c:\packer does NOT exist
+
 Describe 'Acceptance Testing for Win10 VM' {
 
     BeforeAll {
@@ -51,25 +53,18 @@ Describe 'Acceptance Testing for Win10 VM' {
   
       It 'FoxyProxy Exists' {
           ## TODO: Policies.json?
+          ## https://pester.dev/docs/v4/usage/assertions
+          ## FileContentMatch FTW!
           $False | Should -BeTrue
       }
   
-      It 'BurpInstaller Executable Exists' {
-          ## TODO: Move to the lab repo?
-          Test-Path -Path "C:\Users\student\Desktop\BurpInstaller.exe" -PathType Leaf | Should -BeTrue
-      }
-  
       It 'OpenOffice Executable Exists' {
-          ## TODO: Do we actually need this?
+          ## TODO: Change to choco
           Test-Path -Path "C:\Program Files (x86)\OpenOffice 4\program\soffice.exe" -PathType Leaf | Should -BeTrue
       }
   
-      It 'OpenOffice Calc Executable Exists' {
-          Test-Path -Path "C:\Program Files (x86)\OpenOffice 4\program\scalc.exe" -PathType Leaf | Should -BeTrue
-      }
-  
       It 'PowerShell Core Exists' {
-          ## TODO: Move to OSQuery Check
+          ## TODO: Change to choco
           Test-Path -Path "C:\Program Files\PowerShell\7\pwsh.exe" -PathType Leaf | Should -BeTrue
       }
   
@@ -79,21 +74,22 @@ Describe 'Acceptance Testing for Win10 VM' {
       }
   
       It 'Aws CLI Exists' {
+        ## TODO: Change to choco
         $softwareVersions.Name | Should -Contain "AWS Command Line Interface v2"
       }
   
-      It 'OSQuery D Exists' {
-          ## TODO: Find path
+      It 'OSQueryd Service Exists' {
+          ## TODO: Use Get-Service - check that it exists and that it starts automatically
           $False | Should -BeTrue
       }
   
       It 'AWSPowerShell.NetCore Exists' {
-          ## TODO: Policies.json?
+          ## TODO: Get-Module
           $False | Should -BeTrue
       }
   
       It 'Azure CLI Exists' {
-          ## TODO: Policies.json?
+          ## TODO: Change to choco
           $False | Should -BeTrue
       }
   

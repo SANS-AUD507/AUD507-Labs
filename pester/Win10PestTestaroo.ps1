@@ -138,16 +138,14 @@ Describe 'Acceptance Testing for Win10 VM' {
   Context 'Firefox Addin Testing' {  
       
     It 'Wappalyzer Exists' {
-        ## TODO: Policies.json?
-        $False | Should -BeTrue
-    }
+      "C:\Program Files\Mozilla Firefox\distribution\policies.json" | Should -FileContentMatch 'wappalyzer'
+    } 
 
     It 'FoxyProxy Exists' {
-        ## TODO: Policies.json?
-        ## https://pester.dev/docs/v4/usage/assertions
-        ## FileContentMatch FTW!
-        $False | Should -BeTrue
-    }  
+      "C:\Program Files\Mozilla Firefox\distribution\policies.json" | Should -FileContentMatch 'foxyproxy'
+    }
+
+    ## TODO: Retire js??
   }
 
   Context 'Software Version Testing' {

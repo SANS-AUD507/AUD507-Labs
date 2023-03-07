@@ -85,8 +85,10 @@ Describe 'Acceptance Testing for Win10 VM' {
     }
 
     It 'Osqueryd Exists' {
-      ## TODO: Use Get-Service - check that it exists and that it starts automatically
+      ## TODO: Do I need to test path here??
       Test-Path -Path "C:\Program Files\osquery\osqueryd\osqueryd.exe" -PathType Leaf | Should -BeTrue
+      (Get-Service -Name osqueryd | Select-Object StartType).StartType | Should -BeExactly "Automatic"
+      (Get-Service -Name osqueryd | Select-Object Status).Status | Should -BeExactly "Running"
     }
 
     It 'PowerShell Core Exists' {
@@ -147,16 +149,12 @@ Describe 'Acceptance Testing for Win10 VM' {
   Context 'Firefox Addin Testing' {  
       
     It 'Wappalyzer Exists' {
-        ## TODO: Policies.json?
-        $False | Should -BeTrue
-    }
+      "C:\Program Files\Mozilla Firefox\distribution\policies.json" | Should -FileContentMatch 'wappalyzer'
+    } 
 
     It 'FoxyProxy Exists' {
-        ## TODO: Policies.json?
-        ## https://pester.dev/docs/v4/usage/assertions
-        ## FileContentMatch FTW!
-        $False | Should -BeTrue
-    }  
+      "C:\Program Files\Mozilla Firefox\distribution\policies.json" | Should -FileContentMatch 'foxyproxy'
+    } 
   }
 
   Context 'Software Version Testing' {

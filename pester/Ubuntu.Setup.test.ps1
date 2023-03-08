@@ -1,3 +1,6 @@
+# Invoke this test on Ubuntu with this command:
+# cd /home/student/AUD507-Labs/pester/ && pwsh -c "Invoke-Pester Ubuntu.Setup.test.ps1 -Show all"
+
 Describe 'Lab Setup tests for 507Ubuntu VM' {
     
     #Check basic network setup to ensure local and internet connectivity
@@ -43,10 +46,6 @@ Describe 'Lab Setup tests for 507Ubuntu VM' {
         }
 
         It 'Nginx WackPicko' {
-            $localPorts | Should -Contain ''
-        }
-
-        It 'Nginx WackoPicko' {
             $localPorts | Should -Contain '10.50.7.23:80'
         }
 
@@ -58,5 +57,64 @@ Describe 'Lab Setup tests for 507Ubuntu VM' {
         It 'Nessus' {
             $localPorts | Should -Contain '10.50.7.29:8834'
         }
+    }
+
+    Context 'Websites' {
+        It 'Grafana login form' {
+            #look for "Grafana" in the login page
+            $res = (curl -s http://localhost:3000/login | grep -ci 'grafana')
+            $res | Should -BeGreaterThan 0
+        }
+
+        It 'Default Website has workbook link' {
+            $res = (curl -s http://10.50.7.50:80 | grep -ci workbook)
+            $res | Should -BeExactly 1  
+        }
+
+        It 'Workbook website has lab links' {
+            $res = (curl -s http://10.50.7.50:80/workbook/ | grep -ci " lab [0-9]\.[0-9]")
+            $res | Should -BeGreaterThan 10
+        }
+
+        It 'BWapp database install' {
+            $res = (curl -s  http://10.50.7.22/install.php?install=yes | grep -ci bwapp)
+            $res | Should -BeGreaterThan 0
+        }
+
+
+        It 'DVWA login page' {
+            $res = (curl -s http://10.50.7.24:80/login.php | grep -ci dvwa)
+            $res | Should -BeGreaterThan 0
+        }
+        
+        It 'WackoPicko front page' {
+            $res = (curl -s http://10.50.7.23:80 | grep -ci wackopicko)
+            $res | Should -BeGreaterThan 0
+        }
+
+        It 'Juice Shop front page HTTP' {
+            $res = (curl -s http://10.50.7.20:80 | grep -ci juice)
+            $res | Should -BeGreaterThan 0
+        }
+
+        It 'Juice Shop front page HTTPS' {
+            $res = (curl -s -k https://10.50.7.20:443 | grep -ci juice)
+            $res | Should -BeGreaterThan 0
+        }
+
+        It 'Nessus startup page' {
+            $res = (curl -s -k https://10.50.7.29:8834 | grep -ci nessus)
+            $res | Should -BeGreaterThan 0
+        }
+
+        It '' {
+
+        }
+
+        It '' {
+
+        }
+
+
     }
 }

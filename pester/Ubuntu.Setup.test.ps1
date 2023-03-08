@@ -17,7 +17,7 @@ Describe 'Lab Setup tests for 507Ubuntu VM' {
     }
 
     #Check that required ports are open
-    Context 'Local services' {
+    Context 'Local TCP ports' {
 
         #Get a list of listening ports to use in all tests
         BeforeAll {
@@ -25,13 +25,11 @@ Describe 'Lab Setup tests for 507Ubuntu VM' {
         }
 
         It 'Graphite on port 2003' {
-            $localPorts | Should -Contain '0.0.0.0:2003' `
-              -Because 'Graphite service may not be running check it with "systemctl --no-pager status carbon-cache.service"'
+            $localPorts | Should -Contain '0.0.0.0:2003' 
         }
 
         It 'Grafana on port 3000' {
-            $localPorts | Should -Contain ':::3000' `
-              -Because 'Grafana service may not be running check it with "systemctl --no-pager status grafana-server.service"'
+            $localPorts | Should -Contain ':::3000' 
         }
 
         It 'Default Nginx site HTTP/HTTPS' {

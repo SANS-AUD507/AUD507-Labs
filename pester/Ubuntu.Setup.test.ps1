@@ -146,7 +146,7 @@ Describe 'Lab Setup tests for 507Ubuntu VM' {
 
         It 'Azure credentials are working' {
             $username = (az account show | jq '.user.name')
-            $username | Should -BeLike 'student@*'
+            $username | Should -BeLike '"student@*'
         }
     }
 }

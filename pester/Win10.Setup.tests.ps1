@@ -11,8 +11,8 @@ Describe 'Lab Setup tests for 507Win10 VM' {
         }
 
         It 'Ping Google - NAT' {
-            $replyCount = ((ping -n 4 dns.google | Select-String "^Reply").Count)
-            $replyCount | Should -BeGreaterThan 0
+            $res = Test-NetConnection -ComputerName dns.google
+            $res.PingSucceeded | Should -BeTrue
         }
     }
 
@@ -24,11 +24,7 @@ Describe 'Lab Setup tests for 507Win10 VM' {
 
     Context 'Firefox plugins' {
         BeforeAll {
-            Write-Host "Starting firefox and sleeping for 10 seconds to ensure plugins are loaded"
-            Start-Process -FilePath 'C:\Program Files\Mozilla Firefox\firefox.exe'
-            Start-Sleep -Seconds 10
-            Stop-Process -Name Firefox
-            $plugins = osqueryi "select * from firefox_addons;" --json | ConvertFrom-Json
+            $plugins = osqueryi "select * from firefox_addons;" --json 2>$null | ConvertFrom-Json
         }
 
         It 'Retire.js' {

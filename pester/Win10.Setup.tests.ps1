@@ -36,11 +36,16 @@ Describe 'Lab Setup tests for 507Win10 VM' {
         }
 
         It 'Wappalyzer' {
-            
+            $plugins.name | Should -Contain 'Wappalyzer - Technology profiler'
         }
 
         It 'FoxyProxy' {
             $plugins.name | Should -Contain 'FoxyProxy Standard'
         }
+    }
+
+    Context 'Cloud services' {
+        $res = Test-NetConnection -ComputerName 507dc
+        $res.PingSucceeded | Should -BeTrue
     }
 }

@@ -126,12 +126,6 @@ Describe 'Acceptance Testing for Win10 VM' {
       $softwareChoco.Name | Should -Contain "Wget"
     }
 
-    It 'Windows PowerShell Exists' {
-      ## TODO: Move to OSQuery Check
-      #Test-Path -Path "%SystemRoot%\System32\WindowsPowerShell\v1.0\powershell.exe" -PathType Leaf | Should -BeTrue
-      $False | Should -BeTrue
-    }
-
     It 'Zoomit Exists' {
       $softwareChoco.Name | Should -Contain "zoomit"
     }
@@ -147,7 +141,7 @@ Describe 'Acceptance Testing for Win10 VM' {
       "C:\Program Files\Mozilla Firefox\distribution\policies.json" | Should -FileContentMatch 'foxyproxy'
     }
 
-    ## TODO: Retire js??
+    ## TODO: Retire js
   }
 
   Context 'Software Version Testing' {

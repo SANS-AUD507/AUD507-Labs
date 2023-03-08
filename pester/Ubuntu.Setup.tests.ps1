@@ -1,5 +1,5 @@
 # Invoke this test on Ubuntu with this command:
-# cd /home/student/AUD507-Labs/pester/ && pwsh -c "Invoke-Pester Ubuntu.Setup.test.ps1 -Show all"
+# cd /home/student/AUD507-Labs/pester/ && pwsh -c "Invoke-Pester Ubuntu.Setup.tests.ps1 -Show all"
 
 Describe 'Lab Setup tests for 507Ubuntu VM' {
     

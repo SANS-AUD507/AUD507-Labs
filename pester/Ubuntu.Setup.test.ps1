@@ -106,15 +106,47 @@ Describe 'Lab Setup tests for 507Ubuntu VM' {
             $res = (curl -s -k https://10.50.7.29:8834 | grep -ci nessus)
             $res | Should -BeGreaterThan 0
         }
+    }
 
-        It '' {
-
+    Context 'Systemctl services' {
+        
+        It 'Carbon cache' {
+            $res = (systemctl --no-pager status carbon-cache.service | grep -ci "active (running)")
+            $res | should -BeExactly 1
         }
 
-        It '' {
-
+        It 'Nginx' {
+            $res = (systemctl --no-pager status nginx.service | grep -ci "active (running)")
+            $res | should -BeExactly 1
         }
 
+        It 'Microk8s kubelite' {
+            $res = (systemctl --no-pager status snap.microk8s.daemon-kubelite.service | grep -ci "active (running)")
+            $res | should -BeExactly 1
+        }
 
+        It 'Grafana' {
+            $res = (systemctl --no-pager status  grafana-server.service | grep -ci "active (running)")
+            $res | should -BeExactly 1
+        }
+    }
+
+    Context 'Local system' {
+        It 'Disk freespace > 25%' {
+            $freePct = (df -h | awk '/ \/$/ { print $5 }' | sed -e 's/%//')
+            $freePct | should -BeGreaterThan 25
+        }
+    }
+
+    Context 'Cloud CLIs' {
+        It 'AWS credentials are working' {
+            $arn = aws sts get-caller-identity | awk '/Arn/ {print $2}'
+            $arn | Should -Contain 'arn'
+        }
+
+        It 'Azure credentials are working' {
+            $username = (az account show | jq '.user.name')
+            $username | Should -Contain 'student@'
+        }
     }
 }

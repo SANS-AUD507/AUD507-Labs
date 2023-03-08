@@ -1,5 +1,11 @@
-# Invoke this test on Ubuntu with this command:
-# cd /home/student/AUD507-Labs/pester/ && pwsh -c "Invoke-Pester Win10.Setup.tests.ps1 -Show all"
+# Invoke this test on 507Win10 with this command:
+
+# Set-Location c:\users\student\Aud507-Labs\pester
+# $config=New-PesterConfiguration
+# $config.Output.Verbosity='detailed'
+# $config.Run.Path='./Win10.Setup.tests.ps1'
+# Invoke-Pester -Configuration $config
+
 Describe 'Lab Setup tests for 507Win10 VM' {
     
   #Check basic network setup to ensure local and internet connectivity

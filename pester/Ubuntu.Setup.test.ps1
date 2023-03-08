@@ -16,7 +16,7 @@ Describe 'Lab Setup tests for 507Ubuntu VM' {
         }
     }
 
-    #Check that required ports are open
+    #Required ports are open
     Context 'Local TCP ports' {
 
         #Get a list of listening ports to use in all tests
@@ -59,6 +59,7 @@ Describe 'Lab Setup tests for 507Ubuntu VM' {
         }
     }
 
+    #Look for appropriate content on class websites
     Context 'Websites' {
         It 'Grafana login form' {
             #look for "Grafana" in the login page
@@ -108,7 +109,8 @@ Describe 'Lab Setup tests for 507Ubuntu VM' {
         }
     }
 
-    Context 'Systemctl services' {
+    #Ensure systemd services are running
+    Context 'Systemd services' {
         
         It 'Carbon cache' {
             $res = (systemctl --no-pager status carbon-cache.service | grep -ci "active (running)")
@@ -131,6 +133,7 @@ Describe 'Lab Setup tests for 507Ubuntu VM' {
         }
     }
 
+    #Check k8s services for appropriate published TCP ports
     Context 'Kubernetes services' {
         BeforeAll {
             $k8sServices = (microk8s kubectl get services | awk '/NodePort/ { print $5 }')
@@ -153,6 +156,7 @@ Describe 'Lab Setup tests for 507Ubuntu VM' {
         }
     }
 
+    #Local system checks
     Context 'Local system' {
         It 'Disk freespace > 25%' {
             $freePct = (df -h | awk '/ \/$/ { print $5 }' | sed -e 's/%//')
@@ -160,6 +164,7 @@ Describe 'Lab Setup tests for 507Ubuntu VM' {
         }
     }
 
+    #Check that cloud credenitals/configs can return results
     Context 'Cloud CLI configuration' {
         It 'AWS credentials are working' {
             $arn = aws sts get-caller-identity | awk '/Arn/ {print $2}'

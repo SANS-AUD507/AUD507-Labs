@@ -141,12 +141,12 @@ Describe 'Lab Setup tests for 507Ubuntu VM' {
     Context 'Cloud CLIs' {
         It 'AWS credentials are working' {
             $arn = aws sts get-caller-identity | awk '/Arn/ {print $2}'
-            $arn | Should -BeLike 'arn'
+            $arn | Should -BeLike '*arn*'
         }
 
         It 'Azure credentials are working' {
             $username = (az account show | jq '.user.name')
-            $username | Should -BeLike 'student@'
+            $username | Should -BeLike 'student@*'
         }
     }
 }

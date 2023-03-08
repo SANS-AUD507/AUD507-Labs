@@ -131,6 +131,28 @@ Describe 'Lab Setup tests for 507Ubuntu VM' {
         }
     }
 
+    Context 'Kubernetes services' {
+        BeforeAll {
+            $k8sServices = (microk8s kubectl get services | awk '/NodePort/ { print $5 }')
+        }
+
+        It 'juice-shop' {
+            $k8sServices | Should -Contain '8000:30020/TCP'
+        }
+
+        It 'dvwa' {
+            $k8sServices | Should -Contain '8000:30024/TCP'
+        }
+
+        It 'bwapp' {
+            $k8sServices | Should -Contain '8000:30022/TCP'
+        }
+
+        It 'wackopicko' {
+            $k8sServices | Should -Contain '8000:30023/TCP'
+        }
+    }
+
     Context 'Local system' {
         It 'Disk freespace > 25%' {
             $freePct = (df -h | awk '/ \/$/ { print $5 }' | sed -e 's/%//')
@@ -138,7 +160,7 @@ Describe 'Lab Setup tests for 507Ubuntu VM' {
         }
     }
 
-    Context 'Cloud CLIs' {
+    Context 'Cloud CLI configuration' {
         It 'AWS credentials are working' {
             $arn = aws sts get-caller-identity | awk '/Arn/ {print $2}'
             $arn | Should -BeLike '*arn*'

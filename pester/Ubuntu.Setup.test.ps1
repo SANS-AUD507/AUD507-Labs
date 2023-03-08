@@ -7,12 +7,12 @@ Describe 'Lab Setup tests for 507Ubuntu VM' {
     Context 'Network connectivity' {
         It 'Ping 507Win10 - HostOnly' {
             $arpRes = (sudo arping -c 1 10.50.7.101 | awk '/transmitted/ { print $4 }')
-            $arpRes | Should -BeExactly 1
+            $arpRes | Should -BeExactly 1 -Because 'Ensure that first network adapter is set to HostOnly'
         }
 
         It 'Ping Google - NAT' {
             $pingRes = (ping -c 4 dns.google | awk '/transmitted/ { print $4 }')
-            $pingRes | Should -BeGreaterThan 0
+            $pingRes | Should -BeGreaterThan 0 -Because 'Ensure that second network adapter is set to NAT '
         }
     }
 
@@ -25,11 +25,13 @@ Describe 'Lab Setup tests for 507Ubuntu VM' {
         }
 
         It 'Graphite on port 2003' {
-            $localPorts | Should -Contain '0.0.0.0:2003'
+            $localPorts | Should -Contain '0.0.0.0:2003' `
+              -Because 'Graphite service may not be running check it with "systemctl --no-pager status carbon-cache.service"'
         }
 
         It 'Grafana on port 3000' {
-            $localPorts | Should -Contain ':::3000'
+            $localPorts | Should -Contain ':::3000' `
+              -Because 'Grafana service may not be running check it with "systemctl --no-pager status grafana-server.service"'
         }
 
         It 'Default Nginx site HTTP/HTTPS' {

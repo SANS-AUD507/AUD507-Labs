@@ -11,8 +11,18 @@ Describe 'Acceptance Testing for Win10 VM' {
   
     Context 'Binary Existence Testing' {
       It 'ARPing exists' {
-        $res = (/usr/sbin/arping )
-        $res | Should -MatchExactly "^ARPing.*"
+        $res = (/usr/sbin/arping --help | grep -c "ARPing")
+        $res | Should -Be 1
+      }
+
+      It 'Microk8s snap exists' {
+        $res = (snap list | grep -c "^microk8s.*classic$")
+        $res | Should -Be 1
+      }
+
+      It 'AWS CLI v2 exists' {
+        $res = (/usr/local/bin/aws --version)
+        $res | Should -Match "^aws-cli/2.*"
       }
     }
   }

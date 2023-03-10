@@ -8,8 +8,7 @@ Invoke-Pester -Configuration $config
 #>
 
 Describe 'Acceptance Testing for Win10 VM' {
-  
-    Context 'Binary Existence Testing' {
+    Context 'Binary files' {
       It 'ARPing exists' {
         $res = (/usr/sbin/arping --help | grep -c "ARPing")
         $res | Should -Be 1
@@ -24,5 +23,15 @@ Describe 'Acceptance Testing for Win10 VM' {
         $res = (/usr/local/bin/aws --version)
         $res | Should -Match "^aws-cli/2.*"
       }
+    }
+
+    Context 'File Existence' {
+      #TODO: This may become six lines (3 for appbase and 3 for final)
+      It 'Build.txt exists' {
+        "/home/student/build.txt" | Should -FileContentMatch "^[0-9]{4}-.*"
+        "/home/student/build.txt" | Should -FileContentMatch "^Jenkins.*"
+        "/home/student/build.txt" | Should -FileContentMatch "^Github.*"
+      }
+      
     }
   }

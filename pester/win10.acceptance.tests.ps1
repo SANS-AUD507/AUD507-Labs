@@ -1,5 +1,7 @@
 #Requires -RunAsAdministrator
 
+#TODO: Do osquery tests for each test instead of saving in variable
+
 Describe 'Acceptance Testing for Win10 VM' {
 
   BeforeAll {
@@ -9,57 +11,137 @@ Describe 'Acceptance Testing for Win10 VM' {
       exit
     }
 
-    $softwareVersions = osqueryi 'select name,version from programs;' --json | ConvertFrom-Json
+    $softwarePrograms = osqueryi 'select name,version from programs;' --json | ConvertFrom-Json
+    $softwareChoco = osqueryi 'select name,version from chocolatey_packages;' --json | ConvertFrom-Json
+
+  }
+    
+  Context 'Folder Existence Testing' {
+
+    It 'AUD507-Labs Directory Exists' {
+      Test-Path -Path "C:\users\student\AUD507-Labs\" -PathType Container | Should -BeTrue
+    }
+
+    It 'Packer Directory Does Not Exist' {
+      Test-Path -Path "C:\packer" -PathType Container | Should -BeFalse
+    }
+
   }
 
   Context 'Software Existence Testing' {
 
-    ### Test group to determine if the necessary software exists on the VM
-
-    It 'Mozilla Firefox Exists' {
-      $softwareVersions.Name | Should -Contain "Mozilla Firefox ESR (x64 en-US)"
-    }
-
-    It 'Aws CLI Exists' {
-      $softwareVersions.Name | Should -Contain "AWS Command Line Interface v2"
-    }
-
-    ##! TODO: Document that this needs to move into the Lab Repo
-    It 'BurpInstaller Executable Exists' {
-      Test-Path -Path "C:\Users\student\Desktop\BurpInstaller.exe" -PathType Leaf | Should -BeTrue
-    }
-
-    It 'OpenOffice Executable Exists' {
-      Test-Path -Path "C:\Program Files (x86)\OpenOffice 4\program\soffice.exe" -PathType Leaf | Should -BeTrue
-    }
-
-    It 'OpenOffice Calc Executable Exists' {
-      Test-Path -Path "C:\Program Files (x86)\OpenOffice 4\program\scalc.exe" -PathType Leaf | Should -BeTrue
-    }
-
-    It 'WindowsTerminal Executable Exists' {
-
-      ### This is a weird one. Windows terminal is installed as a WindowsApp and the version is in the path name :|
-      ### To get around this, we look in the WindowsApps folder for any director containing '.WindowsTerminal'
-      ### with a file named wt.exe. Once we have that, we make sure that Get-ChildItem returns a count of 1 file found
-      
-      (Get-ChildItem -Path 'C:\Program Files\WindowsApps\*.WindowsTerminal*\wt.exe').count | Should -Be 1
-    }
-
-    It 'JQ Executable Exists' {
-      Get-Command jq.exe | Should -BeTrue
-    }
-
-    ##! TODO: Document that this needs to move into the Lab Repo
     It 'Assessor-GUI.exe Exists' {
       Test-Path -Path "C:\tools\CIS-CAT\Assessor-GUI.exe" -PathType Leaf | Should -BeTrue
     }
 
-    ##! TODO: Document that this needs to move into the Lab Repo
+    It 'AWS CLI Exists' {
+      $softwareChoco.Name | Should -Contain "awscli"
+    }
+
+    It 'Azure CLI Exists' {
+      $softwareChoco.Name | Should -Contain "azure-cli"
+    }
+
+    ## TODO: Check to see if this passes when burp is updated - don't have license to launch program
+    It 'Burp Suite Professional Exists' {
+      $softwarePrograms.Name | Should -Contain "Burp Suite Professional 2022.9.5"
+    }
+
+    It 'Firefox Exists' {
+      $softwareChoco.Name | Should -Contain "FirefoxESR"
+    }
+
+    It 'Google Cloud SDK Exists' {
+      $softwareChoco.Name | Should -Contain "gcloudsdk"
+    }
+
+    It 'Git CLI Exists' {
+      $softwareChoco.Name | Should -Contain "git.install"
+    }
+
+    It 'jq Exists' {
+      $softwareChoco.Name | Should -Contain "jq"
+    }
+
+    It 'OpenOffice Exists' {
+      $softwareChoco.Name | Should -Contain "OpenOffice"
+    }
+
+    It 'OpenVPN Exists' {
+      $softwareChoco.Name | Should -Contain "openvpn-connect"
+    }
+
+    It 'OpenOffice Exists' {
+      $softwareChoco.Name | Should -Contain "OpenOffice"
+    }
+
+    It 'Osqueryd Exists' {
+      ## TODO: Do I need to test path here??
+      Test-Path -Path "C:\Program Files\osquery\osqueryd\osqueryd.exe" -PathType Leaf | Should -BeTrue
+      (Get-Service -Name osqueryd | Select-Object StartType).StartType | Should -BeExactly "Automatic"
+      (Get-Service -Name osqueryd | Select-Object Status).Status | Should -BeExactly "Running"
+    }
+
+    It 'PowerShell Core Exists' {
+      $softwareChoco.Name | Should -Contain "powershell-core"
+    }
+
+    It 'Pup Exists' {
+      $softwareChoco.Name | Should -Contain "pup"
+    }
+
+    It 'Pup Exists' {
+      $softwareChoco.Name | Should -Contain "python3"
+    }
+
+    It 'RVTools Exists' {
+      $softwareChoco.Name | Should -Contain "rvtools"
+    }
+
+    It 'SetDefaultBrowser Exists' {
+      $softwareChoco.Name | Should -Contain "setdefaultbrowser"
+    }
+
+    It 'SoapUI Exists' {
+      $softwareChoco.Name | Should -Contain "soapui"
+    }
+
     It 'Sslyze.exe Exists' {
       Test-Path -Path "C:\Tools\sslyze\sslyze.exe" -PathType Leaf | Should -BeTrue
     }
 
+    It 'Windows Terminal Exists' {
+      $softwareChoco.Name | Should -Contain "microsoft-windows-terminal"
+    }
+
+    It 'Terraform Exists' {
+      $softwareChoco.Name | Should -Contain "terraform"
+    }
+
+    It 'VSCode Exists' {
+      $softwareChoco.Name | Should -Contain "vscode"
+    }
+
+    It 'Wget Exists' {
+      $softwareChoco.Name | Should -Contain "Wget"
+    }
+
+    It 'Zoomit Exists' {
+      $softwareChoco.Name | Should -Contain "zoomit"
+    }
+  }
+
+  Context 'Firefox Addin Testing' {  
+      
+    It 'Wappalyzer Exists' {
+      "C:\Program Files\Mozilla Firefox\distribution\policies.json" | Should -FileContentMatch 'wappalyzer'
+    } 
+
+    It 'FoxyProxy Exists' {
+      "C:\Program Files\Mozilla Firefox\distribution\policies.json" | Should -FileContentMatch 'foxyproxy'
+    }
+
+    ## TODO: Retire js
   }
 
   Context 'Software Version Testing' {
@@ -68,37 +150,23 @@ Describe 'Acceptance Testing for Win10 VM' {
       $PSVersionTable.PSVersion.ToString() | Should -BeExactly "7.2.7"
     }
 
-    It 'OpenOffice Version is 4.1.13' {
-      ($softwareVersions | Where-Object {$_.Name -eq 'OpenOffice 4.1.13'}).version | Should -BeExactly "4.113.9810"
-    }
-
-    It 'AWS CLI Version is 2.8.11.0' {
-      ($softwareVersions | Where-Object {$_.Name -eq 'AWS Command Line Interface v2'}).version | Should -BeExactly "2.8.11.0"
-    }
-
-    It 'Mozilla Firefox Version is 102.4.0' {
-      ($softwareVersions | Where-Object {$_.Name -eq 'Mozilla Firefox ESR (x64 en-US)'}).version | Should -BeExactly "102.4.0"
-    }
-
-    It 'JQ.exe Version is 1.0.0.0' {
-      (Get-Command jq.exe).version.ToString() | Should -BeExactly "1.0.0.0"
-    }
+    ## TODO: read through the labs to determine which software versions are needed
 
   }
 
+
   Context 'File Existence Testing' {
 
-    ##! TODO: Document that this needs to move into the Lab Repo
     It 'FoxyProxySettings.json Exists' {
       Test-Path -Path "C:\tools\FoxyProxySettings.json" -PathType Leaf | Should -BeTrue
     }
 
-    It 'InstalledSoftware.ps1 Exists' {
-      Test-Path -Path "C:\users\student\AUD507-Labs\scripts\InstalledSoftware.ps1" -PathType Leaf | Should -BeTrue
-    }
-
     It 'UserRights.psm1 Exists' {
       Test-Path -Path "C:\users\student\AUD507-Labs\scripts\UserRights.psm1" -PathType Leaf | Should -BeTrue
+    }
+
+    It 'ADAuditGneric.ps1 Exists' {
+        Test-Path -Path "C:\Users\student\AUD507-Labs\scripts\ADAuditGeneric.ps1" -PathType Leaf | Should -BeTrue
     }
 
     It 'Juice-shop.zip Exists' {
@@ -119,16 +187,41 @@ Describe 'Acceptance Testing for Win10 VM' {
 
   }
 
-  Context 'Folder Existence Testing' {
+  Context 'File Integrity Testing' {
 
-    It 'AUD507-Labs Directory Exists' {
-      Test-Path -Path "C:\users\student\AUD507-Labs\" -PathType Container | Should -BeTrue
+    It 'ADAuditGneric.ps1 Exists' {
+      (Get-FileHash -Algorithm SHA256 -Path "C:\Users\student\AUD507-Labs\scripts\ADAuditGeneric.ps1").Hash | Should -Be 'E56B7EC9BD9D722C4B8926F5F489D54CFA5BB2909E1A3AC4928D0826FC31C026'
     }
 
+    It 'FoxyProxySettings.json Exists' {
+      (Get-FileHash -Algorithm SHA256 -Path "C:\tools\FoxyProxySettings.json").Hash | Should -Be '579E84B0E0D3454488B2017D4663625B2118F6653A19DFDE52AA5AA5977C0497'
+    }
+    
+    It 'Juice-shop.zip Exists' {
+      (Get-FileHash -Algorithm SHA256 -Path "C:\Users\student\AUD507-Labs\SAST\juice-shop.zip").Hash | Should -Be '7F7C4345119DC9741323436DDE8706B562F40CC512E6FD1A94E7138BE0722414'
+    }
+
+    It 'namesLower.txt Exists' {
+      (Get-FileHash -Algorithm SHA256 -Path "C:\Users\student\AUD507-Labs\injection\namesLower.txt").Hash | Should -Be 'BF10F4628090B6B2ED03A3D8C146E01A917760809754967DF751F07E66DE89D2'
+    }
+
+    It 'passwords.txt Exists' {
+      (Get-FileHash -Algorithm SHA256 -Path "C:\Users\student\AUD507-Labs\injection\passwords.txt").Hash | Should -Be '0B7C7628C601D1BC4583BDE3A48FF0ED674A1A5B80B6F8427B64FDFCCA144EDA'
+    }
+
+    It 'sqliDetection.txt Exists' {
+      (Get-FileHash -Algorithm SHA256 -Path "C:\Users\student\AUD507-Labs\injection\sqliDetection.txt").Hash | Should -Be '9FDCF9061D97961F6A923F8FC671E23162AC3891D98246ABFD7FDEAA5570FE51'
+    }
+
+    It 'UserRights.psm1 Exists' {
+      (Get-FileHash -Algorithm SHA256 -Path "C:\users\student\AUD507-Labs\scripts\UserRights.psm1").Hash | Should -Be '4F68EE67A415A01FC52C3AB773AF91EFF4EE14D0031C3244E28E0838C8034F56'
+    }
   }
 
+
+  ## TODO: Check labs for more modules
   Context 'PowerShell Module Existence Testing' {
-    
+   
     It 'AWSPowerShell.NetCore Module Exists' {
       (Get-Module -ListAvailable -Name AWSPowerShell.NetCore).count | Should -BeGreaterOrEqual 1
     }
@@ -150,27 +243,4 @@ Describe 'Acceptance Testing for Win10 VM' {
     }
 
   }
-
-
-
-  #Context 'Firefox Extension Existence Testing' {
-
-    ##! TODO: Test to see if these exist in the contents of the firefox resource file
-    ##! C:\Program Files\Mozilla Firefox\distribution
-    ##! Policies.json file content match
-
-    #It 'Wappalyzer Exists' {
-
-    #}
-
-    #It 'FoxyProxy Exists' {
-
-    #}
-
-    #It 'Retire.js Exists' {
-
-    #}
-
-  #}
-
 }

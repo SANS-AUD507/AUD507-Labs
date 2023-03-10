@@ -41,6 +41,8 @@ Describe 'Lab Setup tests for 507Ubuntu VM' {
             $localPorts | Should -Contain '10.50.7.50:443'
         }
 
+        #TODO: Check for port 507+content
+
         It 'Nginx BWApp' {
             $localPorts | Should -Contain '10.50.7.22:80'
         }
@@ -71,7 +73,7 @@ Describe 'Lab Setup tests for 507Ubuntu VM' {
             $res | Should -BeGreaterThan 0
         }
 
-        It 'Default Website has workbook link' {
+        It 'Default website has workbook link' {
             $res = (curl -s http://10.50.7.50:80 | grep -ci workbook)
             $res | Should -BeExactly 1  
         }
@@ -173,6 +175,14 @@ Describe 'Lab Setup tests for 507Ubuntu VM' {
         It 'AWS credentials are working' {
             $arn = aws sts get-caller-identity | awk '/Arn/ {print $2}'
             $arn | Should -BeLike '*arn*'
+        }
+
+        It 'AWS config is set to us-east-2 region' {
+          $true | should -BeFalse
+        }
+      
+        It 'AWS config is set to json output' {
+            $true | should -BeFalse
         }
 
         It 'Azure credentials are working' {

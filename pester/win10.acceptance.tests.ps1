@@ -157,6 +157,8 @@ Describe 'Acceptance Testing for Win10 VM' {
 
   Context 'File Existence Testing' {
 
+    #TODO: Test for SANS EULA
+    
     It 'FoxyProxySettings.json Exists' {
       Test-Path -Path "C:\tools\FoxyProxySettings.json" -PathType Leaf | Should -BeTrue
     }

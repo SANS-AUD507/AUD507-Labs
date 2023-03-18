@@ -43,20 +43,10 @@ Describe 'Acceptance Testing for Win10 VM' {
         dpkg -l | grep -ci inspec | Should -Be 1
       }
 
-      ## TODO: Test for john-data ?
       It 'john' {
         dpkg -l | grep -cE "john([^-])" | Should -Be 1
+        dpkg -l | grep -cE "john-data" | Should -Be 1
       }
-
-      <# TODO: What all do I need in regards to mysql? -- /usr/bin/mysql --version | grep -ci ".*mysql.*"
-      ii  mysql-client                          8.0.31-0ubuntu0.22.04.1                 all          MySQL database client (metapackage depending on the latest version)
-      ii  mysql-client-8.0                      8.0.31-0ubuntu0.22.04.1                 amd64        MySQL database client binaries
-      ii  mysql-client-core-8.0                 8.0.31-0ubuntu0.22.04.1                 amd64        MySQL database core client binaries
-      ii  mysql-common                          5.8+1.0.8                               all          MySQL database common files, e.g. /etc/mysql/my.cnf
-      ii  mysql-server                          8.0.31-0ubuntu0.22.04.1                 all          MySQL database server (metapackage depending on the latest version)
-      ii  mysql-server-8.0                      8.0.31-0ubuntu0.22.04.1                 amd64        MySQL database server binaries and system database setup
-      ii  mysql-server-core-8.0                 8.0.31-0ubuntu0.22.04.1                 amd64        MySQL database server binaries
-      #>
 
       It 'mysql' {
        dpkg -l | grep -cE "mysql-client([^-])" | Should -Be 1
@@ -70,21 +60,27 @@ Describe 'Acceptance Testing for Win10 VM' {
       ## TODO: This is what we call in the biz a bad call. Work with Clay to find a better way to solve this one
       It 'nginx' {
         dpkg -l | grep -cE "^ii  nginx([^-])" | Should -Be 1
-       }
+      }
 
-      ## TODO: Someone stop me!!
       It 'ncat' {
         dpkg -l | grep -cE "nmap([^'])" | Should -Be 1
       }
 
+      It 'osquery' {
+        dpkg -l | grep -ci osquery | Should -Be 1
+      }      
 
+      It 'PowerShell' {
+        dpkg -l | grep -ci powershell | Should -Be 1
+      }
+
+      It 'tripwire' {
+        dpkg -l | grep -ci tripwire | Should -Be 1
+      }
 
       It 'CFN_nag' {
         gem list | grep -ci cfn-nag | Should -Be 1
       }
-
-      
-
     }
 
     Context 'Downloaded software' {
@@ -118,6 +114,27 @@ Describe 'Acceptance Testing for Win10 VM' {
         $res | Should -Be 1
       }
 
+      ## TODO: This one was weird (the text was blue) couldn't seem to get grep to see the version info
+      It 'njsscan' {
+        $res = (/usr/local/bin/njsscan --help | grep -ci "njsscan version")
+        $res | Should -Be 1
+      }
+
+      It 'Prowler' {
+        $res = (/home/student/prowler/prowler -V | grep -ci "^Prowler.*")
+        $res | Should -Be 1
+      }
+
+      It 'Terrascan' {
+        $res = (/usr/local/bin/terrascan help | grep -ci "^Terrascan.*")
+        $res | Should -Be 1
+      }
+
+      ## TODO: Don't like looking for a version here. Maybe look at the help?
+      It 'yandiff' {
+        $res = (/usr/local/bin/yandiff --version | grep -ci "^Version: 1.3$")
+        $res | Should -Be 1
+      }
 
     }
 
@@ -129,8 +146,21 @@ Describe 'Acceptance Testing for Win10 VM' {
       }
 
       It 'Etc Issue'{
-        "/etc/issue" | Should -FileContentMatch "'^This VM hosts.*5x7.*'"
+        "/etc/issue" | Should -FileContentMatch "^This VM hosts.*5x7.*"
+      }
+
+      It 'SSH Key'{
+        "/home/student/.ssh/authorized_keys" | Should -FileContentMatch ".*student@win10.sec557.local$"
       }
       
     }
+
+
+  Context 'PowerShell Module Existence' {
+   
+    It 'Pester' {
+      (Get-Module -ListAvailable -Name Pester).count | Should -BeGreaterOrEqual 1
+    }
+
   }
+}

@@ -7,6 +7,8 @@ $config.Run.Path='./Ubuntu.acceptance.tests.ps1'
 Invoke-Pester -Configuration $config
 #>
 
+## TODO: Clean up the names of the tests...TICE
+
 Describe 'Acceptance Testing for Win10 VM' {
   
     Context 'Installed Packages' {
@@ -14,9 +16,14 @@ Describe 'Acceptance Testing for Win10 VM' {
         dpkg -l | grep -ci arping | Should -Be 1
       }
 
-      ## TODO: Regex be scary.. looking for docker-ce but not docker-ce-cli or docker-ce-rootless-extras
+      ## TODO: Regex be scary..looking for docker-ce but not docker-ce-cli or docker-ce-rootless-extras
+      ##       In other words..how hard did I make this? Cause I did this like 1 million times.......
       It 'Docker' {
         dpkg -l | grep -cE "docker-ce([^-])" | Should -Be 1
+      }
+
+      It 'Grafana' {
+        dpkg -l | grep -ci "grafana-enterprise" | Should -Be 1
       }
 
       It 'Microk8s snap' {
@@ -25,12 +32,55 @@ Describe 'Acceptance Testing for Win10 VM' {
       }
 
       It 'Graphite API' {
-        dpkg -l | grep -ci graphite-api | Should -Be 1
+        dpkg -l | grep -ci graphite-api | Should -Be 1        
+      }
+
+      It 'Gunicorn' {
         dpkg -l | grep -ci gunicorn | Should -Be 1
       }
 
+      It 'Inspec' {
+        dpkg -l | grep -ci inspec | Should -Be 1
+      }
+
+      ## TODO: Test for john-data ?
+      It 'john' {
+        dpkg -l | grep -cE "john([^-])" | Should -Be 1
+      }
+
+      <# TODO: What all do I need in regards to mysql? -- /usr/bin/mysql --version | grep -ci ".*mysql.*"
+      ii  mysql-client                          8.0.31-0ubuntu0.22.04.1                 all          MySQL database client (metapackage depending on the latest version)
+      ii  mysql-client-8.0                      8.0.31-0ubuntu0.22.04.1                 amd64        MySQL database client binaries
+      ii  mysql-client-core-8.0                 8.0.31-0ubuntu0.22.04.1                 amd64        MySQL database core client binaries
+      ii  mysql-common                          5.8+1.0.8                               all          MySQL database common files, e.g. /etc/mysql/my.cnf
+      ii  mysql-server                          8.0.31-0ubuntu0.22.04.1                 all          MySQL database server (metapackage depending on the latest version)
+      ii  mysql-server-8.0                      8.0.31-0ubuntu0.22.04.1                 amd64        MySQL database server binaries and system database setup
+      ii  mysql-server-core-8.0                 8.0.31-0ubuntu0.22.04.1                 amd64        MySQL database server binaries
+      #>
+
+      It 'mysql' {
+       dpkg -l | grep -cE "mysql-client([^-])" | Should -Be 1
+       dpkg -l | grep -cE "mysql-server([^-])" | Should -Be 1
+      }
+
+      It 'Nessus' {
+        dpkg -l | grep -ci nessus | Should -Be 1
+      }
+
+      ## TODO: This is what we call in the biz a bad call. Work with Clay to find a better way to solve this one
+      It 'nginx' {
+        dpkg -l | grep -cE "^ii  nginx([^-])" | Should -Be 1
+       }
+
+      ## TODO: Someone stop me!!
+      It 'ncat' {
+        dpkg -l | grep -cE "nmap([^'])" | Should -Be 1
+      }
+
+
+
       It 'CFN_nag' {
-        gem list | grep -i cfn-nag | Should -Be 1
+        gem list | grep -ci cfn-nag | Should -Be 1
       }
 
       
@@ -52,9 +102,19 @@ Describe 'Acceptance Testing for Win10 VM' {
         $res = (/usr/bin/fleet version | grep -c "^fleet version.*")
         $res | Should -Be 1
       }
-      
+
       It 'fleetctl' {
         $res = (/usr/bin/fleetctl --version | grep -ci "^fleetctl.*version.*")
+        $res | Should -Be 1
+      }
+
+      It 'gcloud cli' {
+        $res = (/usr/bin/gcloud version | grep -ci "^Google Cloud.*")
+        $res | Should -Be 1
+      }
+
+      It 'kubectl' {
+        $res = (/usr/local/bin/kubectl version --client --output=yaml | grep -ci "^clientVersion.*")
         $res | Should -Be 1
       }
 

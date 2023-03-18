@@ -9,6 +9,7 @@ Invoke-Pester -Configuration $config
 
 ## TODO: Clean up the names of the tests...TICE
 ## TODO: Graphite Carbon?
+## TODO: az upgrade message when running tests
 
 
 Describe 'Acceptance Testing for Win10 VM' {

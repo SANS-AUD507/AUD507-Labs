@@ -8,6 +8,8 @@ Invoke-Pester -Configuration $config
 #>
 
 ## TODO: Clean up the names of the tests...TICE
+## TODO: Graphite Carbon?
+
 
 Describe 'Acceptance Testing for Win10 VM' {
   
@@ -142,9 +144,9 @@ Describe 'Acceptance Testing for Win10 VM' {
       $res | Should -Be 1
     }
 
+    ## TODO: really not a fan of testing electricEye this way. Suggestions?
     It 'electricEye' {
-      $res = (/home/student/ElectricEye/README.md | grep -ci "^# ElectricEye$")
-      $res | Should -Be 1
+      "/home/student/ElectricEye/README.md" | Should -FileContentMatch "^# ElectricEye$"
     }
 
   }

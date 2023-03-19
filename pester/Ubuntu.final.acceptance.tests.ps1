@@ -9,8 +9,8 @@ Invoke-Pester -Configuration $config
 
 ## TODO: Clean up the names of the tests...TICE
 ## TODO: Graphite Carbon?
-## TODO: az upgrade message when running tests
-
+## TODO: When documenting tests in lab markdown source files, name them CONTEXT|IT
+## TODO: Copy the services context from the setup tests to check for services like carbon ^^
 
 Describe 'Acceptance Testing for Win10 VM' {
   
@@ -19,10 +19,9 @@ Describe 'Acceptance Testing for Win10 VM' {
       dpkg -l | grep -ci arping | Should -Be 1
     }
 
-    ## TODO: Regex be scary..looking for docker-ce but not docker-ce-cli or docker-ce-rootless-extras
-    ##       In other words..how hard did I make this? Cause I did this like 1 million times.......
+    ## TODO: add ^ii  to these tests
     It 'Docker' {
-      dpkg -l | grep -cE "docker-ce([^-])" | Should -Be 1
+      dpkg -l | grep -cE "^ii  docker-ce([^-])" | Should -Be 1
     }
 
     It 'Grafana' {
@@ -60,7 +59,6 @@ Describe 'Acceptance Testing for Win10 VM' {
       dpkg -l | grep -ci nessus | Should -Be 1
     }
 
-    ## TODO: This is what we call in the biz a bad call. Work with Clay to find a better way to solve this one
     It 'nginx' {
       dpkg -l | grep -cE "^ii  nginx([^-])" | Should -Be 1
     }
@@ -117,11 +115,11 @@ Describe 'Acceptance Testing for Win10 VM' {
       $res | Should -Be 1
     }
 
-    ## TODO: This one was weird (the text was blue) couldn't seem to get grep to see the version info
-    It 'njsscan' {
-      $res = (/usr/local/bin/njsscan --help | grep -ci "njsscan version")
-      $res | Should -Be 1
-    }
+    ## TODO: This will change to a 'docker image ls' test
+    # It 'njsscan' {
+    #   $res = (/usr/local/bin/njsscan --help | grep -ci "njsscan version")
+    #   $res | Should -Be 1
+    # }
 
     It 'Prowler' {
       $res = (/home/student/prowler/prowler -V | grep -ci "^Prowler.*")
@@ -133,7 +131,6 @@ Describe 'Acceptance Testing for Win10 VM' {
       $res | Should -Be 1
     }
 
-    ## TODO: Don't like looking for a version here. Maybe look at the help?
     It 'yandiff' {
       $res = (/usr/local/bin/yandiff --version | grep -ci "^Version: 1.3$")
       $res | Should -Be 1
@@ -145,16 +142,18 @@ Describe 'Acceptance Testing for Win10 VM' {
       $res | Should -Be 1
     }
 
-    ## TODO: really not a fan of testing electricEye this way. Suggestions?
-    It 'electricEye' {
-      "/home/student/ElectricEye/README.md" | Should -FileContentMatch "^# ElectricEye$"
-    }
+    ## TODO: Figure this out once Clay gets it installed
+    # It 'electricEye' {
+    #   "/home/student/ElectricEye/README.md" | Should -FileContentMatch "^# ElectricEye$"
+    # }
 
   }
 
   Context 'File Existence' {
-    #TODO: This may become six lines (3 for appbase and 3 for final)
-    It 'Build.txt exists' {
+    It 'Build files exist' {
+      "/home/student/base_build.txt" | Should -FileContentMatch "^[0-9]{4}-.*"
+      "/home/student/base_build.txt" | Should -FileContentMatch "^Jenkins.*"
+      "/home/student/base_build.txt" | Should -FileContentMatch "^Github.*"      
       "/home/student/build.txt" | Should -FileContentMatch "^[0-9]{4}-.*"
       "/home/student/build.txt" | Should -FileContentMatch "^Jenkins.*"
       "/home/student/build.txt" | Should -FileContentMatch "^Github.*"

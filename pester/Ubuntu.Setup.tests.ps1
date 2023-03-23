@@ -123,7 +123,10 @@ Describe 'Lab Setup tests for 507Ubuntu VM' {
             $res | should -BeExactly 1
         }
 
-        #TODO: graphite-api
+        It 'Graphite-api' {
+            $res = (systemctl --no-pager status graphite-api.service | grep -ci "active (running)")
+            $res | should -BeExactly 1
+        }
 
         It 'Nginx' {
             $res = (systemctl --no-pager status nginx.service | grep -ci "active (running)")

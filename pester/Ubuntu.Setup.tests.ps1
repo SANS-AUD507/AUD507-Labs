@@ -183,12 +183,12 @@ Describe 'Lab Setup tests for 507Ubuntu VM' {
         }
 
         It 'AWS config is set to us-east-2 region' {
-          $true | should -BeFalse
-        }
+            '/home/student/.aws/config' | should -FileContentMatch 'region = us-east-2'
+          }
       
-        It 'AWS config is set to json output' {
-            $true | should -BeFalse
-        }
+          It 'AWS config is set to json output' {
+            '/home/student/.aws/config' | should -FileContentMatch 'output = json'
+          }
 
         It 'Azure credentials are working' {
             $username = (az account show | jq '.user.name')

@@ -170,8 +170,8 @@ Describe 'Lab Setup tests for 507Ubuntu VM' {
     #Local system checks
     Context 'Local system' {
         It 'Disk freespace > 25%' {
-            $freePct = (df -h | awk '/ \/$/ { print $5 }' | sed -e 's/%//')
-            $freePct | should -BeGreaterThan 25
+            $usedPct = (df -h | awk '/ \/$/ { print $5 }' | sed -e 's/%//')
+            $usedPct | should -BeLessThan 75
         }
     }
 

@@ -28,6 +28,8 @@ Describe 'Lab Setup tests for 507Win10 VM' {
     }
   }
 
+  #The firefox plugins won't show up in osquery until the application has been run once, and
+  #the polices.json file processed.
   Context 'Firefox plugins' {
     BeforeAll {
         $plugins = osqueryi "select * from firefox_addons;" --json 2>$null | ConvertFrom-Json

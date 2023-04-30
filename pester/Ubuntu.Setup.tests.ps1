@@ -146,7 +146,7 @@ Describe 'Lab Setup tests for 507Ubuntu VM' {
     }
 
     #Check k8s services for appropriate published TCP ports
-    Context 'Kubernetes services' {
+    Context 'Kubernetes TCP Ports' {
         BeforeAll {
             $k8sServices = (microk8s kubectl get services | awk '/NodePort/ { print $5 }')
         }
@@ -165,6 +165,28 @@ Describe 'Lab Setup tests for 507Ubuntu VM' {
 
         It 'wackopicko' {
             $k8sServices | Should -Contain '8000:30023/TCP'
+        }
+    }
+
+    Context 'Kubernetes Pod Status' {
+        It 'juice-shop' {
+            $state = (microk8s kubectl get pods | awk '/juice-shop/ {print $3}')
+            $state | Should -Be 'Running'
+        }
+
+        It 'dvwa' {
+            $state = (microk8s kubectl get pods | awk '/dvwa/ {print $3}')
+            $state | Should -Be 'Running'
+        }
+
+        It 'bwapp' {
+            $state = (microk8s kubectl get pods | awk '/bwapp/ {print $3}')
+            $state | Should -Be 'Running'
+        }
+
+        It 'wackopicko' {
+            $state = (microk8s kubectl get pods | awk '/wackopicko/ {print $3}')
+            $state | Should -Be 'Running'
         }
     }
 

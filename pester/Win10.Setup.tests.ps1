@@ -40,7 +40,7 @@ Describe 'Lab Setup tests for 507Win10 VM' {
     }
 
     It 'Wappalyzer' {
-        $plugins.name | Should -Contain 'Wappalyzer - Technology profiler'
+        $plugins.name | Should -Contain 'Wappalyzer'
     }
 
     It 'FoxyProxy' {

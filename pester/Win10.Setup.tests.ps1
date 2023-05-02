@@ -36,15 +36,15 @@ Describe 'Lab Setup tests for 507Win10 VM' {
     }
 
     It 'Retire.js' {
-        $plugins.name | Should -Contain 'retire.js'
+        $plugins.identifier | Should -Contain '@retire.js'
     }
 
     It 'Wappalyzer' {
-        $plugins.name | Should -Contain 'Wappalyzer'
+        $plugins.identifier | Should -Contain 'wappalyzer@crunchlabz.com'
     }
 
     It 'FoxyProxy' {
-        $plugins.name | Should -Contain 'FoxyProxy Standard'
+        $plugins.identifier | Should -Contain 'foxyproxy@eric.h.jung'
     }
   }
 

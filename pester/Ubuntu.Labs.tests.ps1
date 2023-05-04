@@ -30,7 +30,7 @@ Describe '507 Labs'{
     }
 
     It 'Part 2 - Stealth scan gets filtered port 80' {
-      $portCount = ( sudo nmap -sS -p 80 10.50.7.26 | grep -c 'filtered' 
+      $portCount = ( sudo nmap -sS -p 80 10.50.7.26 | grep -c 'filtered' )
       $portCount | Should -Be 1
     }
 

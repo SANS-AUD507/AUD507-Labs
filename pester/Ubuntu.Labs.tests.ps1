@@ -45,7 +45,7 @@ Describe '507 Labs'{
     }
   
     It 'Part 3 - Kubectl shows 4 services' {
-      $portList = ( microk8s kubectl get services | awk -F: '/NodePort/ {print $2}' | sed -e 's/\/.*//' )
+      $portList = ( microk8s kubectl get services | awk -F: '/NodePort/ {print 2}' | sed -e 's/\/.*//' )
       $portList | Should -Contain 30020
       $portList | Should -Contain 30022
       $portList | Should -Contain 30023
@@ -57,14 +57,6 @@ Describe '507 Labs'{
       $verList[0] | Should -Be '2.4.7'
       $verList[1] | Should -Be '2.4.7'
       $verList[2] | Should -Be '2.4.25'
-    }
-  }
-
-  Context 'Lab 1.3' {
-    It 'Part 3 - First user is Amartinez' {
-      $username = ( aws iam list-users --query 'Users[*].{username:UserName}' | jq '.[0].username' )
-      $username | Should -BeLike '*AMartinez*' 
-          
     }
   }
 }

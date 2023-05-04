@@ -17,7 +17,7 @@ Describe '507 Labs'{
       }
     }
 
-    #Skip the Linux context if alma is unreachable
+    #Check if alma is reachable
     if( -not (Test-NetConnection -InformationLevel Quiet -ComputerName alma.5x7.local) ){
       $skipAlma = $true
     }
@@ -25,20 +25,12 @@ Describe '507 Labs'{
       ssh-keyscan.exe alma >> C:\users\student\.ssh\known_hosts
     }
 
-    #Skip the Kubernetes and OSQuery Linux context if Ubuntu is unreachable
-    if( -not (Test-NetConnection -InformationLevel Quiet -ComputerName ubuntu.5x7.local) ){
-      $skipUbuntu = $true
-    }
-    else {
-      ssh-keyscan.exe ubuntu >> C:\users\student\.ssh\known_hosts
-    }
-
-    #Skip domain tests if the DC is not available
+    #Check if the DC is available
     if( -not (Test-NetConnection -InformationLevel Quiet -ComputerName 507dc.5x7.local) ){
       $skipDC = $true
     }
 
-    #Skip web app tests if the web server is not available
+    #Check if the web server is available
     if( -not (Test-NetConnection -ComputerName 10.50.7.23 -Port 80 -InformationLevel Quiet) ){
       $skipWeb = $true
     }

@@ -9,7 +9,6 @@ Describe '507 Labs'{
       $skipAWS = $true
     }
     else {
-      Import-Module AWSPowershell.NetCore
       #Skip the Cloud Services tests if there are no good AWS credentials
       $userARN = (aws sts get-caller-identity | jq '.Arn')
       if( $userARN -notlike '*student*'){

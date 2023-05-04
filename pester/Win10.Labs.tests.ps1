@@ -1,3 +1,11 @@
+# Invoke this test on 507Win10 with this command:
+<#
+$config=New-PesterConfiguration
+$config.Output.Verbosity='detailed'
+$config.Run.Path='.\Win10.Labs.tests.ps1'
+Invoke-Pester -Configuration $config
+#>
+
 Describe '507 Labs'{
   BeforeDiscovery {
 
@@ -60,5 +68,18 @@ Describe '507 Labs'{
       (Get-AWSCmdletName -ApiOperation describeinstances -Service "Amazon Elastic Compute Cloud").CmdletName | 
         Should -Contain 'Get-EC2Instance'
     }
+  
+    It 'Get-AWSCmdletName with CLI command returns correct results' {
+      (Get-AWSCmdletName -AwsCliCommand "aws ec2 describe-instances").CmdletName | 
+        Should -Contain 'Get-IAMUserList'
+    }
+
+    It 'Get-AWSCmdletName with CLI command returns correct results' {
+      (Get-AWSCmdletName -AwsCliCommand "aws iam list-users").CmdletName | 
+        Should -Contain 'Get-IAMUserList'
+      (Get-AWSCmdletName -AwsCliCommand "aws ec2 describe-instances").CmdletName | 
+        Should -Contain 'Get-EC2Instance'
+    }
+
   }
 }

@@ -40,7 +40,25 @@ Describe '507 Labs'{
     It 'Part 3 - First user is Amartinez' {
       $username = ( ssh -i C:\users\student\.ssh\ubuntukey student@ubuntu "aws iam list-users --query 'Users[*].{username:UserName}' | jq '.[0].username'" )
       $username | Should -BeLike '*AMartinez*' 
-          
+    }
+
+    It 'Part 3 - AWS CLI returns instances' {
+      $instanceCount = ((aws ec2 describe-instances --profile default | ConvertFrom-Json).Reservations.Count)
+      $instanceCount | Should -BeGreaterOrEqual 5 
+    }
+
+    It 'PowerShell module returns instances' {
+      (Get-EC2Instance).Count | Should -BeGreaterOrEqual 5
+    }
+
+    It 'Get-AWSCmdletName returns multiple results' {
+      (Get-AWSCmdletName -ApiOperation describeinstances).Count | 
+        Should -BeGreaterOrEqual 3
+    }
+
+    It 'Get-AWSCmdletName with service returns correct results' {
+      (Get-AWSCmdletName -ApiOperation describeinstances -Service "Amazon Elastic Compute Cloud").CmdletName | 
+        Should -Contain 'Get-EC2Instance'
     }
   }
 }

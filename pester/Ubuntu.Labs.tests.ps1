@@ -45,7 +45,7 @@ Describe '507 Labs'{
     }
   
     It 'Part 3 - Kubectl shows 4 services' {
-      $portList = ( microk8s kubectl get services | awk -F: '/NodePort/ {print 2}' | sed -e 's/\/.*//' )
+      $portList = ( microk8s kubectl get services | awk -F: '/NodePort/ {print $2}' | sed -e 's/\/.*//' )
       $portList | Should -Contain 30020
       $portList | Should -Contain 30022
       $portList | Should -Contain 30023
@@ -53,7 +53,7 @@ Describe '507 Labs'{
     }
 
     It 'Part 3 - K8s Apache versions correct' {
-      $verList = ( sudo nmap -sT -p30022-30024 -sV 127.0.0.1 | awk '/Apache/ {print 6}' )
+      $verList = ( sudo nmap -sT -p30022-30024 -sV 127.0.0.1 | awk '/Apache/ {print $6}' )
       $verList[0] | Should -Be '2.4.7'
       $verList[1] | Should -Be '2.4.7'
       $verList[2] | Should -Be '2.4.25'

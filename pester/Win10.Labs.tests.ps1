@@ -120,7 +120,21 @@ Describe '507 Labs'{
         $instanceProperties | Should -Contain 'InstanceId'
         $instanceProperties | Should -Contain 'Instancetype'
         $instanceProperties | Should -Contain 'Tags'
-      }
+    }
+    
+    It 'AWS PowerShell module contains >5,000 of Get* commands'{
+      Get-Command -Module AWSPowerShell.NetCore -name Get-* | Measure-Object | 
+        Should -BeGreaterThan 5000
+    }
+
+    It 'AWS Powershell returns 4 VPCs' {
+      (Get-EC2Vpc).Count | Should -Be 4
+    }
+
+    It '3 EC2 instances are missing tags' {
+      (Get-EC2Instance |  Where-Object { ($_.Instances.tags | Where-Object Key -eq 'Business_Unit').Count -lt 1 }).instances.Count | 
+        Should -Be 3
+    }
   }
 
 }

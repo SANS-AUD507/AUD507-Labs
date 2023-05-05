@@ -384,6 +384,13 @@ Describe '507 Labs'{
         $ntpState.Policy | Should -Be 'off'
         $ntpState.Running | Should -Be $false
         $ntpState.Required | Should -Be $false
-      }
+    }
+
+    It 'Part 2 - Datastore version is > 6' {
+      $ds = (Get-VMHost -Server esxi1 | Get-Datastore)
+      $ds.FileSystemVersion | Should -BeGreaterOrEqual 6
+    }
+
+
   }
 }

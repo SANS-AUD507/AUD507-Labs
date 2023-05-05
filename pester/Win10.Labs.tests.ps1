@@ -226,6 +226,7 @@ Describe '507 Labs'{
       $res.Data | Should -Be 1
     }
   }
+
   Context 'Lab 2.3' {
     BeforeAll {
       $User = "student"
@@ -291,9 +292,9 @@ Describe '507 Labs'{
         -Server 507dc -Credential $cred).Count | Should -Be 5
     }
 
-    It 'Part 5 - 5 Domain Admins without recursion' {
+    It 'Part 5 - 71 Domain Admins with recursion' {
       (Get-ADGroupMember -Identity "Domain Admins" `
-      -Server 507dc -Credential $cred -Recursive).Count | Should -Be 5
+      -Server 507dc -Credential $cred -Recursive).Count | Should -Be 71
     }
 
     It 'Part 5 - Student is a domain admin' {

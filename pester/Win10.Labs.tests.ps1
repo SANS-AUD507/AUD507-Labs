@@ -365,7 +365,7 @@ Describe '507 Labs'{
     #Set back to defaults
     AfterAll {
       Set-PowerCLIConfiguration -Scope User -DefaultVIServerMode Multiple -Confirm:$false
-      Set-PowerCLIConfiguration -InvalidCertificateAction Ignore -Confirm:$true
+      Set-PowerCLIConfiguration -InvalidCertificateAction Fail -Confirm:$false
     }
 
     It 'Part 2 - Get-VM returns 2 VMs' {

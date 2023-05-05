@@ -95,6 +95,16 @@ Describe '507 Labs'{
     It 'Get-AZVM returns results'{
       (Get-AzVM).Count | Should -BeGreaterOrEqual 3
     }
+
+    It 'jq processes az vm output' {
+      $azvm = (az vm list)
+      $prop = (($azvm | jq '[ .[] | { vmname: .name, os: .storageProfile.osDisk.osType, vmsize: .hardwareProfile.vmSize, tags: .tags }]' | 
+        ConvertFrom-Json) | Get-Member -Type Properties).Name
+        $prop | Should -Contain 'os'
+        $prop | Should -Contain 'tags'
+        $prop | Should -Contain 'vmname'
+        $prop | Should -Contain 'vmsize'
+      }
   }
 
 }

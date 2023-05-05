@@ -60,7 +60,4 @@ Describe '507 Labs'{
     }
   }
 
-  Context 'Lab 1.5 - AWS'{
-    
-  }
 }

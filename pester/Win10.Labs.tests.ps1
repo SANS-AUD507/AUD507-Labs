@@ -161,7 +161,7 @@ Describe '507 Labs'{
 
   Context 'Lab 2.1' {
     It 'Part 1 - 5 local users returned' {
-      (Get-LocalUsers).Count | Should -Be 5
+      (Get-LocalUser).Count | Should -Be 5
     }
 
     It 'Part 2 - Student is only enabled user' {
@@ -194,10 +194,37 @@ Describe '507 Labs'{
       ($res | Where-Object Name -like '*mozilla*').Count | Should -Be 0
     }
 
-    It 'InstalledSoftware script does output includes Firefox'{
+    It 'Part 3 - InstalledSoftware script does output includes Firefox'{
       $res = C:\users\student\AUD507-Labs\scripts\InstalledSoftware.ps1
       ($res | Where-Object Displayname -like '*mozilla*').Count | Should -BeGreaterOrEqual 1
 
     }
+
+    It 'Part 5 - OSQuery returns Firefox' {
+      $res = osqueryi.exe "select name, version, install_date from programs;" --json | ConvertFrom-Json | Where-Object Name -like '*mozilla*'
+      $res.Count | Should -BeGreaterOrEqual 1
+    }
+
+    It 'Part 5 - OSQuery returns 2 admin users' {
+      $query = "select username, groupname, type 
+      from users join user_groups on user_groups.UID = users.uid 
+      join groups on groups.gid = user_groups.gid 
+      where groups.groupname ='Administrators';"
+
+      $res = (osqueryi.exe "$query" --json | ConvertFrom-Json)
+      $res.Username | Should -Contain 'Administrator'
+      $res.Username | Should -Contain 'student'
+    }
+
+    It 'Part 5 - OSQuery returns 1 for LimitBlankPasswordUse' {
+      $query = "select data, path from registry 
+      where path= 'HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\Lsa\LimitBlankPasswordUse';
+      "
+
+      $res = (osqueryi.exe "$query" --json | ConvertFrom-Json)
+      $res.Count | Should -Be 1
+      $res.Data | Should -Be 1
+    }
+
   }
 }

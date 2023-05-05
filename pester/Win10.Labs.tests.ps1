@@ -112,10 +112,10 @@ Describe '507 Labs'{
   Context 'Lab 1.3 - Azure' -Skip:$skipAzure {
     It 'Part 6 - Get-AZVM returns results'{
       (Get-AzVM).Count | Should -BeGreaterOrEqual 3
-      $azvm = (az vm list)
     }
 
     It 'Part 6 - jq processes az vm output' {
+      $azvm = (az vm list)
       $prop = (($azvm | jq '[ .[] | { vmname: .name, os: .storageProfile.osDisk.osType, vmsize: .hardwareProfile.vmSize, tags: .tags }]' | 
         ConvertFrom-Json) | Get-Member -Type Properties).Name
         $prop | Should -Contain 'os'
@@ -125,6 +125,7 @@ Describe '507 Labs'{
       }
 
     It 'Part 7 - Powershell converts JSON correctly' {
+      $azvm = (az vm list)
       (($azvm | ConvertFrom-Json) | Where-Object Name -like '*aud507*').Count | 
         Should -BeGreaterOrEqual 3
     }

@@ -91,8 +91,10 @@ Describe '507 Labs'{
     }
   }
 
-  Context 'Lab 1.3 - AWS' -Skip:$skipAWS {
-    
+  Context 'Lab 1.3 - Azure' -Skip:$skipAzure {
+    It 'Get-AZVM returns results'{
+      (Get-AzVM).Count | Should -BeGreaterOrEqual 3
+    }
   }
 
 }

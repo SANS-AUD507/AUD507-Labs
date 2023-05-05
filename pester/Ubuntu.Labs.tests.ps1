@@ -59,4 +59,8 @@ Describe '507 Labs'{
       $verList[2] | Should -Be '2.4.25'
     }
   }
+
+  Context 'Lab 1.5 - AWS'{
+    
+  }
 }

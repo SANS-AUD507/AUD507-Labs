@@ -362,6 +362,12 @@ Describe '507 Labs'{
       Connect-VIServer -Server esxi1 -Credential $vmwareCred
     }
 
+    #Set back to defaults
+    AfterAll {
+      Set-PowerCLIConfiguration -Scope User -DefaultVIServerMode Multiple -Confirm:$false
+      Set-PowerCLIConfiguration -InvalidCertificateAction Ignore -Confirm:$true
+    }
+
     It 'Part 2 - Get-VM returns 2 VMs' {
       (Get-VM).Count | Should -Be 2
     }
@@ -422,7 +428,25 @@ Describe '507 Labs'{
       $res = (Get-IAMUserPolicies -UserName $userName)
       $res.Count | Should -Be 1
     }
+  }
 
+  Context 'Lab 4.4' {
+    It 'Part 4 - 4 buckets have server side encryption enabled' {
+      $res = ((Get-S3Bucket | Get-S3BucketEncryption).ServerSideEncryptionRules | 
+        Where-Object ServerSideEncryptionByDefault -ne $null)
+      $res.Count | Should -Be 4
+    }
+
+    It 'Part 4 - 4 buckets have versioning turned off' {
+      $res = (Get-S3Bucket | Get-S3BucketVersioning | Where-Object Status -eq 'Off')
+      $res.Count | Should -Be 4
+    }
+
+    
+    It 'Part 4 - 4 buckets have MFA Delete turned off' {
+      $res = (Get-S3Bucket | Get-S3BucketVersioning | Where-Object EnableMfaDelete -eq $false)
+      $res.Count | Should -Be 4
+    }
 
   }
 }

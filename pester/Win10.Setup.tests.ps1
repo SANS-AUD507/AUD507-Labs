@@ -77,6 +77,12 @@ Describe 'Lab Setup tests for 507Win10 VM' {
   }
 
   Context 'Lab 2.3' {
+    BeforeAll {
+      $User = "student"
+      $PWord = ConvertTo-SecureString -String "Password1" -AsPlainText -Force
+      $cred = New-Object -TypeName System.Management.Automation.PSCredential -ArgumentList $User, $PWord
+    }
+
     It 'Part 2 - Get-LocalGroupMember returns correct admins' {
       $res = (Get-LocalGroupMember -Group "administrators")
       $res | Should -Contain '507WIN10\Administrator'
@@ -116,5 +122,61 @@ Describe 'Lab Setup tests for 507Win10 VM' {
       $res.Name | Should -Contain 'IPC$'
     }
 
+    It 'Part 5 - 1007 AD users returned' {
+      (Get-ADUser -Filter * -Server 507dc -Credential $cred).Count | Should -Be 1007
+    }
+
+    It 'Part 5 - 2 Users without password required' {
+      (Get-ADUser -Filter {PasswordNotRequired -eq $true} `
+        -Server 507dc -Credential $cred).Count | Should -Be 2
+    }
+
+    It 'Part 5 - 9 Users without password expiration' {
+      (Get-ADUser -Filter {PasswordNotRequired -eq $true} `
+        -Server 507dc -Credential $cred).Count | Should -Be 2
+    }
+
+    It 'Part 5 - 5 Domain Admins without recursion' {
+      (Get-ADGroupMember -Identity "Domain Admins" `
+        -Server 507dc -Credential $cred).Count | Should -Be 5
+    }
+
+    It 'Part 5 - 5 Domain Admins without recursion' {
+      (Get-ADGroupMember -Identity "Domain Admins" `
+      -Server 507dc -Credential $cred -Recursive).Count | Should -Be 5
+    }
+
+    It 'Part 5 - Student is a domain admin' {
+      (Get-ADPrincipalGroupMembership -Identity "student" `
+        -Server 507dc -Credential $cred).Name | Should -Contain 'Domain Admins'
+    }
+
+    It 'Part 5 - DSGet shows student in Schema Admins' {
+      $userDN = (Get-ADUser -Identity student `
+        -Server 507dc -Credential $cred).DistinguishedName
+      $res = dsget user "$userDN" -memberof -expand -s 507dc -u student -p Password1
+      $res | SHould -Contain '"CN=Schema Admins,CN=Users,DC=AUD507,DC=local"'
+      $res | SHould -Contain '"CN=Domain Admins,CN=Users,DC=AUD507,DC=local"'
+    }
+
+    #Inactive/Active user counts don't really make sense in the lab, so we don't test them
+    It 'Part 5 - ADAuditGeneric script returns expected results' {
+      Set-Location C:\Users\student\AUD507-Labs\scripts\
+      $res = (.\ADAuditGeneric.ps1 -Server 507dc -Credential $cred)
+      $res.NetBiosName | Should -Be 'AUD507'
+      $res.DNSRoot | Should -Be 'AUD507.local'
+      $res.Forest | Should -Be 'AUD507.local'
+      $res.ADFunctionalLevel | Should -Be 'Windows2016Domain'
+      $res.EnabledUsers | Should -Be 996 
+      $res.DisabledUsers | Should -Be 11
+      $res.TotalUsers | Should -Be 1007
+      $res.StalePasswordUsers | Should -Be 0
+      $res.DomainAdmins | Should -Be 71
+      $res.SchemaAdmins | Should -Be 71
+      $res.EnterpriseAdmins | Should -Be 1
+      $res.PasswordNeverExpires | Should -Be 8
+      $res.PasswordNeverSet | Should -Be 0
+      $res.PasswordNotRequired | Should -Be 1
+    }
   }
 }

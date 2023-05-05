@@ -189,5 +189,15 @@ Describe '507 Labs'{
         Should -Be 1      
     }
 
+    It 'Part 3 - Firefox not in the Win32_Product list'{
+      $res = (Get-CimInstance Win32_Product | Select-Object Name, Version )
+      ($res | Where-Object Name -like '*mozilla*').Count | Should -Be 0
+    }
+
+    It 'InstalledSoftware script does output includes Firefox'{
+      $res = C:\users\student\AUD507-Labs\scripts\InstalledSoftware.ps1
+      ($res | Where-Object Displayname -like '*mozilla*').Count | Should -BeGreaterOrEqual 1
+
+    }
   }
 }

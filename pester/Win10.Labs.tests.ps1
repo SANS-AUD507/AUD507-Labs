@@ -28,7 +28,7 @@ Describe '507 Labs'{
 
     #If the Azure configuration is not there, then skip the Azure tests
     $azSubCount = (Get-Content C:\Users\student\.azure\azureProfile.json | ConvertFrom-Json).Subscriptions.Count
-    if( $azCount -lt 1) {
+    if( $azSubCount -lt 1) {
       $skipAzure = $true
     } 
     else {

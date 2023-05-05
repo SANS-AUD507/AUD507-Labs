@@ -105,6 +105,11 @@ Describe '507 Labs'{
         $prop | Should -Contain 'vmname'
         $prop | Should -Contain 'vmsize'
       }
+
+    It 'Powershell converts JSON correctly' {
+      (($azvm | ConvertFrom-Json) | Where-Object Name -like '*aud507*').Count | 
+        Should -BeGreaterOrEqual 3
+    }
   }
 
 }

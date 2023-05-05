@@ -25,6 +25,20 @@ Describe '507 Labs'{
       }
     }
 
+    #If the Azure configuration is not there, then skip the Azure tests
+    $azSubCount = (Get-Content C:\Users\student\.azure\azureProfile.json | ConvertFrom-Json).Subscriptions.Count
+    if( $azCount -lt 1) {
+      $skipAzure = $true
+    } 
+    else {
+      if(Get-AzTenant.Name -notlike '*sans*'){
+        $skipAzure = $true
+      }
+      else{
+        Import-Module Az.Compute
+      }
+    }
+
     #Check if alma is reachable
     if( -not (Test-NetConnection -InformationLevel Quiet -ComputerName alma.5x7.local) ){
       $skipAlma = $true
@@ -44,7 +58,7 @@ Describe '507 Labs'{
     }
   }
 
-  Context 'Lab 1.3' {
+  Context 'Lab 1.3 - AWS' -Skip:$skipAWS {
     It 'Part 3 - First user is Amartinez' {
       $username = ( ssh -i C:\users\student\.ssh\ubuntukey student@ubuntu "aws iam list-users --query 'Users[*].{username:UserName}' | jq '.[0].username'" )
       $username | Should -BeLike '*AMartinez*' 
@@ -70,16 +84,15 @@ Describe '507 Labs'{
     }
   
     It 'Get-AWSCmdletName with CLI command returns correct results' {
-      (Get-AWSCmdletName -AwsCliCommand "aws ec2 describe-instances").CmdletName | 
-        Should -Contain 'Get-IAMUserList'
-    }
-
-    It 'Get-AWSCmdletName with CLI command returns correct results' {
       (Get-AWSCmdletName -AwsCliCommand "aws iam list-users").CmdletName | 
         Should -Contain 'Get-IAMUserList'
       (Get-AWSCmdletName -AwsCliCommand "aws ec2 describe-instances").CmdletName | 
         Should -Contain 'Get-EC2Instance'
     }
-
   }
+
+  Context 'Lab 1.3 - AWS' -Skip:$skipAWS {
+    
+  }
+
 }

@@ -329,4 +329,23 @@ Describe '507 Labs'{
       $res.PasswordNotRequired | Should -Be 1
     }
   }
+
+  Context 'Lab4.1-VMWare (Importing module may be slow)' {
+    BeforeAll {
+      Import-Module VMware.PowerCLI
+      Set-PowerCLIConfiguration -Scope User -ParticipateInCEIP $false -Confirm:$false
+      Set-PowerCLIConfiguration -Scope User -DefaultVIServerMode Single -Confirm:$false
+      Set-PowerCLIConfiguration -InvalidCertificateAction Ignore -Confirm:$false
+
+      $User = "student"
+      $PWord = ConvertTo-SecureString -String "Password1!" -AsPlainText -Force
+      $cred = New-Object -TypeName System.Management.Automation.PSCredential -ArgumentList $User, $PWord
+
+      Connect-VIServer -Server esxi1 -Credential $vmwareCred
+    }
+
+    It 'Get-VM returns 2 VMs' {
+      (Get-VM).Count | Should -Be 2
+    }
+  }
 }

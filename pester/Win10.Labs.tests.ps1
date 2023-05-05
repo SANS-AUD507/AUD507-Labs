@@ -236,8 +236,8 @@ Describe '507 Labs'{
 
     It 'Part 2 - Get-LocalGroupMember returns correct admins' {
       $res = (Get-LocalGroupMember -Group "administrators")
-      $res | Should -Contain '507WIN10\Administrator'
-      $res | Should -Contain '507WIN10\Student'
+      $res.Name | Should -Contain '507WIN10\Administrator'
+      $res.Name | Should -Contain '507WIN10\Student'
     }
 
     It 'Part 2 - UserRights.psm1 returns admin for debug privilege' {
@@ -312,8 +312,7 @@ Describe '507 Labs'{
 
     #Inactive/Active user counts don't really make sense in the lab, so we don't test them
     It 'Part 5 - ADAuditGeneric script returns expected results' {
-      Set-Location C:\Users\student\AUD507-Labs\scripts\
-      $res = (.\ADAuditGeneric.ps1 -Server 507dc -Credential $cred)
+      $res = (C:\Users\student\AUD507-Labs\scripts\ADAuditGeneric.ps1 -Server 507dc -Credential $cred)
       $res.NetBiosName | Should -Be 'AUD507'
       $res.DNSRoot | Should -Be 'AUD507.local'
       $res.Forest | Should -Be 'AUD507.local'

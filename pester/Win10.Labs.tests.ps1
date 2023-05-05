@@ -447,6 +447,47 @@ Describe '507 Labs'{
       $res = (Get-S3Bucket | Get-S3BucketVersioning | Where-Object EnableMfaDelete -eq $false)
       $res.Count | Should -Be 4
     }
+  }
 
+  Context 'Lab 5.2' {
+    It 'Part 1 - Juiceshop shows self-signed cert' {
+      $sslyzeRes = (C:\tools\sslyze\sslyze.exe --certinfo juiceshop.5x7.local:443)
+      ($sslyzeRes -like '*Issuer*juiceshop.5x7.local').Count | Should -Be 1
+    }
+
+    It 'Part 1 - Cert expiration is 2032-11-19' {
+      $sslyzeRes = (C:\tools\sslyze\sslyze.exe --certinfo juiceshop.5x7.local:443)
+      ($sslyzeRes -like '*Not After*2032-11-19').Count | Should -Be 1
+    }
+
+    It 'Part 1 - Windows CA store test fails' {
+      $sslyzeRes = (C:\tools\sslyze\sslyze.exe --certinfo juiceshop.5x7.local:443)
+      ($sslyzeRes -like '*Windows CA Store*FAILED*').Count | Should -Be 1
+    }
+
+    It 'Part 1 - SSLv3 disabled' {
+      $sslyzeRes = (C:\tools\sslyze\sslyze.exe --sslv3 juiceshop.5x7.local:443)
+      ($sslyzeRes -like '*the server rejected all cipher suites*').Count | Should -Be 1
+    }
+
+    It 'Part 1 - TLS1.0 disabled' {
+      $sslyzeRes = (C:\tools\sslyze\sslyze.exe --tlsv1 juiceshop.5x7.local:443)
+      ($sslyzeRes -like '*the server rejected all cipher suites*').Count | Should -Be 1
+    }
+
+    It 'Part 1 - TLS1.1 disabled' {
+      $sslyzeRes = (C:\tools\sslyze\sslyze.exe --tlsv1_1 juiceshop.5x7.local:443)
+      ($sslyzeRes -like '*the server rejected all cipher suites*').Count | Should -Be 1
+    }
+
+    It 'Part 1 - TLS1.2 enabled' {
+      $sslyzeRes = (C:\tools\sslyze\sslyze.exe --tlsv1_2 juiceshop.5x7.local:443)
+      ($sslyzeRes -like '*The server accepted the following 27*').Count | Should -Be 1
+    }
+
+    It 'Part 1 - TLS1.3 enabled' {
+      $sslyzeRes = (C:\tools\sslyze\sslyze.exe --tlsv1_3 juiceshop.5x7.local:443)
+      ($sslyzeRes -like '*The server accepted the following 3*').Count | Should -Be 1
+    }
   }
 }

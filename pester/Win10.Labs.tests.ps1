@@ -17,6 +17,7 @@ Describe '507 Labs'{
       $skipAWS = $true
     }
     else {
+      Write-Verbose 'Importing AWSPowershell.NetCore'
       Import-Module AWSPowershell.NetCore
       #Skip the Cloud Services context if there are no good AWS credentials
       $userARN = (Get-STSCallerIdentity).Arn
@@ -31,6 +32,7 @@ Describe '507 Labs'{
       $skipAzure = $true
     } 
     else {
+      Write-Verbose 'Importing AZ Module'
       Import-Module Az
       if(Get-AzTenant.Name -notlike '*sans*'){
         $skipAzure = $true
@@ -42,7 +44,8 @@ Describe '507 Labs'{
       $skipEsxi = $true
     }
     else {
-      ssh-keyscan.exe alma >> C:\users\student\.ssh\known_hosts
+      Write-Verbose 'Importing PowerCLI'
+      Import-Module VMware.PowerCLI
     }
     
 
@@ -337,16 +340,15 @@ Describe '507 Labs'{
     }
   }
 
-  Context 'Lab4.1-VMWare (Importing module may be slow)' -Skip:$skipEsxi {
+  Context 'Lab4.1-VMWare' -Skip:$skipEsxi {
     BeforeAll {
-      Import-Module VMware.PowerCLI
       Set-PowerCLIConfiguration -Scope User -ParticipateInCEIP $false -Confirm:$false
       Set-PowerCLIConfiguration -Scope User -DefaultVIServerMode Single -Confirm:$false
       Set-PowerCLIConfiguration -InvalidCertificateAction Ignore -Confirm:$false
 
       $User = "student"
       $PWord = ConvertTo-SecureString -String "Password1!" -AsPlainText -Force
-      $cred = New-Object -TypeName System.Management.Automation.PSCredential -ArgumentList $User, $PWord
+      $vmwareCred = New-Object -TypeName System.Management.Automation.PSCredential -ArgumentList $User, $PWord
 
       Connect-VIServer -Server esxi1 -Credential $vmwareCred
     }

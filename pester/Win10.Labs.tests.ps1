@@ -296,22 +296,22 @@ Describe '507 Labs'{
       (Get-ADUser -Filter * -Server 507dc -Credential $cred).Count | Should -Be 1007
     }
 
-    It 'Part 5 - 2 Users without password required' {
+    It 'Part 5 - 2 users without password required' {
       (Get-ADUser -Filter {PasswordNotRequired -eq $true} `
         -Server 507dc -Credential $cred).Count | Should -Be 2
     }
 
-    It 'Part 5 - 9 Users without password expiration' {
+    It 'Part 5 - 9 users without password expiration' {
       (Get-ADUser -Filter {PasswordNotRequired -eq $true} `
         -Server 507dc -Credential $cred).Count | Should -Be 2
     }
 
-    It 'Part 5 - 5 Domain Admins without recursion' {
+    It 'Part 5 - 5 domain admins without recursion' {
       (Get-ADGroupMember -Identity "Domain Admins" `
         -Server 507dc -Credential $cred).Count | Should -Be 5
     }
 
-    It 'Part 5 - 71 Domain Admins with recursion' {
+    It 'Part 5 - 71 domain admins with recursion' {
       (Get-ADGroupMember -Identity "Domain Admins" `
       -Server 507dc -Credential $cred -Recursive).Count | Should -Be 71
     }

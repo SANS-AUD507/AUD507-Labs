@@ -74,6 +74,20 @@ Describe 'Lab Setup tests for 507Win10 VM' {
     It 'Azure account is setup' {
       (az account show | ConvertFrom-Json).user.name | Should -BeLike 'student@*'
     }
+  }
+
+  Context 'Lab 2.3' {
+    It 'Part 1 - Get-LocalGroupMember returns correct admins' {
+      $res = (Get-LocalGroupMember -Group "administrators")
+      $res | Should -Contain '507WIN10\Administrator'
+      $res | Should -Contain '507WIN10\Student'
+    }
+
+    It 'Part 1 - UserRights.psm1 returns admin for debug privilege' {
+      Import-Module C:\users\student\AUD507-Labs\scripts\UserRights.psm1
+      $res = (Get-AccountsWithUserRight -Right SeDebugPrivilege).account
+      $res | Should -Contain 'BUILTIN\Administrators'
+    }
 
   }
 }

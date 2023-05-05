@@ -39,7 +39,7 @@ Describe '507 Labs'{
       Import-Module Az.Accounts
       Write-Host 'Importing AZ Compute module'
       Import-Module Az.Compute
-      if(Get-AzTenant.Name -notlike '*sans*'){
+      if((Get-AzTenant).Name -notlike '*sans*'){
         Write-Host "Skipping Azure tests because tenant is not correct"
         $skipAzure = $true
       }
@@ -58,6 +58,7 @@ Describe '507 Labs'{
 
     #Check if alma is reachable
     if( -not (Test-NetConnection -InformationLevel Quiet -ComputerName alma.5x7.local) ){
+      Write-Host "Skipping alma tests because host is unreachable"
       $skipAlma = $true
     }
     else {

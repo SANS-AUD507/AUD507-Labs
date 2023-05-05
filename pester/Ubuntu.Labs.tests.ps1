@@ -24,6 +24,23 @@ Describe '507 Labs'{
       }
     }
 
+    #If the Azure configuration is not there, then skip the Azure tests
+    $azSubCount = (Get-Content /home/student/.azure/azureProfile.json | ConvertFrom-Json).Subscriptions.Count
+    if( $azSubCount -lt 1) {
+      Write-Host "Skipping Azure tests because config files do not exist"
+      $skipAzure = $true
+    } 
+    else {
+      Write-Host 'Importing AZ Accounts module'
+      Import-Module Az.Accounts
+      Write-Host 'Importing AZ Compute module'
+      Import-Module Az.Compute
+      if((Get-AzTenant).Name -notlike '*sans*'){
+        Write-Host "Skipping Azure tests because tenant is not correct"
+        $skipAzure = $true
+      }
+    }
+
   }
 
   Context 'Lab 1.2' {
@@ -67,5 +84,7 @@ Describe '507 Labs'{
       $verList[2] | Should -Be '2.4.25'
     }
   }
+
+  Context 'Lab '
 
 }

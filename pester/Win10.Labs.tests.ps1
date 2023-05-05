@@ -169,7 +169,25 @@ Describe '507 Labs'{
       $enabledUsers.Count | Should -Be 1
       $enabledUsers.Name | Should -Contain 'student'
     }
+  }
 
-    
+  Context 'Lab 2.2' {
+    It 'Part 1 - Build number is 19044' {
+      (Get-CimInstance Win32_OperatingSystem).BuildNumber | Should -Be 19044
+    }
+
+    It 'Part 1 - At least one hotfix returns' {
+      (Get-HotFix).Count | Should -BeGreaterOrEqual 1
+    }
+
+    It 'Part 2 - LSA settings correct' {
+      $res = (Get-ItemProperty "HKLM:\SYSTEM\CurrentControlSet\Control\Lsa")
+      $res.LimitBlankPasswordUse | Should -Be 1
+      $res.NoLMHash | Should -Be 1
+      $res.restrictanonymous | Should -Be 1      
+      (Get-ItemProperty "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System" |  Select-Object).EnableLUA | 
+        Should -Be 1      
+    }
+
   }
 }

@@ -8,10 +8,6 @@ Invoke-Pester -Configuration $config
 
 Describe '507 Labs'{
   BeforeDiscovery {
-
-    # Get rid of the know hosts file
-    # Remove-Item -Path C:\users\student\.ssh\known_hosts -ErrorAction SilentlyContinue -Force
-
     #If the AWS config files are not there, then skip the AWS tests
     if( -not ( (Test-Path -Type Leaf -Path /home/student/.aws/credentials) -or (Test-Path -Type Leaf -Path /home/student/.aws/config) ) ) {
       $skipAWS = $true

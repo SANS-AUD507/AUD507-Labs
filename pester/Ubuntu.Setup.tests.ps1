@@ -8,6 +8,10 @@ $config.Run.Path='./Ubuntu.Setup.tests.ps1'
 Invoke-Pester -Configuration $config
 #>
 Describe 'Lab Setup tests for 507Ubuntu VM' {
+    BeforeDiscovery {
+        #arping is required for testing connectivity to Win10, which has a host firewall
+        sudo apt install -y arping 
+    }
     
     #Check basic network setup to ensure local and internet connectivity
     Context 'Network connectivity' {

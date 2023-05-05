@@ -31,13 +31,20 @@ Describe '507 Labs'{
       $skipAzure = $true
     } 
     else {
+      Import-Module Az
       if(Get-AzTenant.Name -notlike '*sans*'){
         $skipAzure = $true
       }
-      else{
-        Import-Module Az.Compute
-      }
     }
+
+    #Check if esxi server is reachable
+    if( -not (Test-NetConnection -InformationLevel Quiet -ComputerName esxi.5x7.local) ){
+      $skipEsxi = $true
+    }
+    else {
+      ssh-keyscan.exe alma >> C:\users\student\.ssh\known_hosts
+    }
+    
 
     #Check if alma is reachable
     if( -not (Test-NetConnection -InformationLevel Quiet -ComputerName alma.5x7.local) ){
@@ -330,7 +337,7 @@ Describe '507 Labs'{
     }
   }
 
-  Context 'Lab4.1-VMWare (Importing module may be slow)' {
+  Context 'Lab4.1-VMWare (Importing module may be slow)' -Skip:$skipEsxi {
     BeforeAll {
       Import-Module VMware.PowerCLI
       Set-PowerCLIConfiguration -Scope User -ParticipateInCEIP $false -Confirm:$false

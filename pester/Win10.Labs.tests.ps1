@@ -367,10 +367,10 @@ Describe '507 Labs'{
     }
 
     It 'Part 2 - DNS server settings are correct' {
-      $dnsservers = (Get-VMHost).ExtensionData.Config.Network.DNSConfig |  
-        Select-Object -ExpandProperty address
+      $dnsservers = ((Get-VMHost).ExtensionData.Config.Network.DNSConfig |  
+        Select-Object -ExpandProperty address)
       $dnsservers | Should -Contain '8.8.8.8'
-      $dnsservers | Should -NotContain '8.8.4.4'
+      $dnsservers | Should -Not -Contain '8.8.4.4'
     }
 
     It 'Part 2 - NTP Server is correct' {

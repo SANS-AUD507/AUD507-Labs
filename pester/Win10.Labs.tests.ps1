@@ -17,7 +17,7 @@ Describe '507 Labs'{
       $skipAWS = $true
     }
     else {
-      Write-Verbose 'Importing AWSPowershell.NetCore'
+      Write-Host'Importing AWSPowershell.NetCore'
       Import-Module AWSPowershell.NetCore
       #Skip the Cloud Services context if there are no good AWS credentials
       $userARN = (Get-STSCallerIdentity).Arn
@@ -32,7 +32,7 @@ Describe '507 Labs'{
       $skipAzure = $true
     } 
     else {
-      Write-Verbose 'Importing AZ Module'
+      Write-Host 'Importing AZ Module'
       Import-Module Az
       if(Get-AzTenant.Name -notlike '*sans*'){
         $skipAzure = $true
@@ -44,7 +44,7 @@ Describe '507 Labs'{
       $skipEsxi = $true
     }
     else {
-      Write-Verbose 'Importing PowerCLI'
+      Write-Host 'Importing PowerCLI'
       Import-Module VMware.PowerCLI
     }
     

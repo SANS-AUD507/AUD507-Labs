@@ -69,21 +69,21 @@ Describe '507 Labs'{
       $instanceCount | Should -BeGreaterOrEqual 5 
     }
 
-    It 'PowerShell module returns instances' {
+    It 'Part 3 - PowerShell module returns instances' {
       (Get-EC2Instance).Count | Should -BeGreaterOrEqual 5
     }
 
-    It 'Get-AWSCmdletName returns multiple results' {
+    It 'Part 3 - Get-AWSCmdletName returns multiple results' {
       (Get-AWSCmdletName -ApiOperation describeinstances).Count | 
         Should -BeGreaterOrEqual 3
     }
 
-    It 'Get-AWSCmdletName with service returns correct results' {
+    It 'Part 3 - Get-AWSCmdletName with service returns correct results' {
       (Get-AWSCmdletName -ApiOperation describeinstances -Service "Amazon Elastic Compute Cloud").CmdletName | 
         Should -Contain 'Get-EC2Instance'
     }
   
-    It 'Get-AWSCmdletName with CLI command returns correct results' {
+    It 'Part 3 - Get-AWSCmdletName with CLI command returns correct results' {
       (Get-AWSCmdletName -AwsCliCommand "aws iam list-users").CmdletName | 
         Should -Contain 'Get-IAMUserList'
       (Get-AWSCmdletName -AwsCliCommand "aws ec2 describe-instances").CmdletName | 
@@ -92,11 +92,11 @@ Describe '507 Labs'{
   }
 
   Context 'Lab 1.3 - Azure' -Skip:$skipAzure {
-    It 'Get-AZVM returns results'{
+    It 'Part 6 - Get-AZVM returns results'{
       (Get-AzVM).Count | Should -BeGreaterOrEqual 3
     }
 
-    It 'jq processes az vm output' {
+    It 'Part 6 - jq processes az vm output' {
       $azvm = (az vm list)
       $prop = (($azvm | jq '[ .[] | { vmname: .name, os: .storageProfile.osDisk.osType, vmsize: .hardwareProfile.vmSize, tags: .tags }]' | 
         ConvertFrom-Json) | Get-Member -Type Properties).Name
@@ -106,14 +106,14 @@ Describe '507 Labs'{
         $prop | Should -Contain 'vmsize'
       }
 
-    It 'Powershell converts JSON correctly' {
+    It 'Part 7 - Powershell converts JSON correctly' {
       (($azvm | ConvertFrom-Json) | Where-Object Name -like '*aud507*').Count | 
         Should -BeGreaterOrEqual 3
     }
   }
 
   Context 'Lab 1.4 - AWS CLI/PoSh' {
-    It 'aws ec2 with jq returns tags' {
+    It 'Part 2 - aws ec2 with jq returns tags' {
       $instanceProperties = (aws ec2 describe-instances |
         jq '[.Reservations[].Instances[0] | { "InstanceId": .InstanceId, "Instancetype": .InstanceType, "Tags":.Tags  }]' |
         ConvertFrom-Json | Get-Member -type Properties).Name
@@ -122,16 +122,16 @@ Describe '507 Labs'{
         $instanceProperties | Should -Contain 'Tags'
     }
     
-    It 'AWS PowerShell module contains >5,000 of Get* commands'{
+    It 'Part 2 - AWS PowerShell module contains >5,000 of Get* commands'{
       (Get-Command -Module AWSPowerShell.NetCore -name Get-* | Measure-Object).Count | 
         Should -BeGreaterThan 5000
     }
 
-    It 'AWS Powershell returns 3 VPCs' {
+    It 'Part 2 - AWS Powershell returns 3 VPCs' {
       (Get-EC2Vpc).Count | Should -Be 3
     }
 
-    It '3 EC2 instances are missing tags' {
+    It 'Part 2 - 3 EC2 instances are missing tags' {
       (Get-EC2Instance |  Where-Object { ($_.Instances.tags | Where-Object Key -eq 'Business_Unit').Count -lt 1 }).instances.Count | 
         Should -Be 3
     }
@@ -144,19 +144,32 @@ Describe '507 Labs'{
       Import-Module Az.ResourceGraph
     }
 
-    It 'Resource graph extension is installed' {
+    It 'Part 4 - Resource graph extension is installed' {
       (az extension list | ConvertFrom-Json).name | Should -Contain 'resource-graph'
     }
 
-    It 'Resource graph query returns multiple objects' {
+    It 'Part 4 - Resource graph query returns multiple objects' {
       (az graph query -q 'Resources' | ConvertFrom-Json).Count | Should -BeGreaterThan 20
     }
 
-    It 'PowerShell graph query returns multiple objects' {
+    It 'Part 4 - PowerShell graph query returns multiple objects' {
       $q = 'Resources | order by type | project location, name, type, tags, sku, id'
       $inventory = Search-AzGraph -Query $q
       $inventory.Count | Should -BeGreaterThan 20      
     }
   }
 
+  Context 'Lab 2.1' {
+    It 'Part 1 - 5 local users returned' {
+      (Get-LocalUsers).Count | Should -Be 5
+    }
+
+    It 'Part 2 - Student is only enabled user' {
+      $enabledUsers = (Get-LocalUser | Where-Object enabled -eq $true)
+      $enabledUsers.Count | Should -Be 1
+      $enabledUsers.Name | Should -Contain 'student'
+    }
+
+    
+  }
 }

@@ -137,4 +137,26 @@ Describe '507 Labs'{
     }
   }
 
+  Context 'Lab 1.4 - Azure' {
+    BeforeAll{
+      #ensure the resource graph extension and module are installed
+      az extension add --name resource-graph
+      Import-Module Az.ResourceGraph
+    }
+
+    It 'Resource graph extension is installed' {
+      (az extension list | ConvertFrom-Json).name | Should -Contain 'resource-graph'
+    }
+
+    It 'Resource graph query returns multiple objects' {
+      (az graph query -q 'Resources' | ConvertFrom-Json).Count | Should -BeGreaterThan 20
+    }
+
+    It 'PowerShell graph query returns multiple objects' {
+      $q = 'Resources | order by type | project location, name, type, tags, sku, id'
+      $inventory = Search-AzGraph -Query $q
+      $inventory.Count | Should -BeGreaterThan 20      
+    }
+  }
+
 }

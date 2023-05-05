@@ -17,7 +17,7 @@ Describe '507 Labs'{
       $skipAWS = $true
     }
     else {
-      Write-Host'Importing AWSPowershell.NetCore'
+      Write-Host 'Importing AWSPowershell.NetCore'
       Import-Module AWSPowershell.NetCore
       #Skip the Cloud Services context if there are no good AWS credentials
       $userARN = (Get-STSCallerIdentity).Arn

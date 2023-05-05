@@ -390,6 +390,38 @@ Describe '507 Labs'{
       $ds = (Get-VMHost -Server esxi1 | Get-Datastore)
       $ds.FileSystemVersion | Should -BeGreaterOrEqual 6
     }
+  }
+
+  Context 'Lab 4.2' {
+    It 'Part 1 - IAM account summary results correct' {
+      $res = (Get-IAMAccountSummary)
+      $res.AccountAccessKeysPresent | Should -Be 0
+      $res.AccountMFAEnabled | Should -Be 1
+    }
+
+    It 'Part 1 - Student user has only 1 key' {
+      $myusername = (Get-STSCallerIdentity).Arn -replace ".*\/", ""
+      (Get-IAMAccessKey -UserName $myusername).Count | Should -Be 1
+    }
+
+    It 'Part 1 - GLee has 2 keys' {
+      $userName  = (Get-IAMUserList | Where-Object UserName -like 'GLee*').UserName
+      $keyCount = (Get-IAMAccessKey -UserName $userName).Count
+      $keyCount | Should -Be 2
+    }
+
+    It 'Part 1 - JAllen has AWSSupportAccess policy attached' {
+      $userName = (Get-IAMUserList | Where-Object username -like 'JAllen*').UserName
+      $res = (Get-IAMAttachedUserPolicies -UserName $userName)
+      $res.Count | Should -Be 1
+      $res[0].PolicyName | Should -Be 'AWSSupportAccess'
+    }
+
+    It 'Part 1 - Walexander has inline policy' {
+      $userName = (Get-IAMUserList | Where-Object username -like 'Walexander*').UserName
+      $res = (Get-IAMUserPolicies -UserName $userName)
+      $res.Count | Should -Be 1
+    }
 
 
   }

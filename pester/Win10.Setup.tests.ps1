@@ -1,3 +1,4 @@
+#Requires -RunAsAdministrator
 # Invoke this test on 507Win10 with this command:
 <#
 Set-Location c:\users\student\Aud507-Labs\pester

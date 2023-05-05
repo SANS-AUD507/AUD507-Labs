@@ -77,16 +77,43 @@ Describe 'Lab Setup tests for 507Win10 VM' {
   }
 
   Context 'Lab 2.3' {
-    It 'Part 1 - Get-LocalGroupMember returns correct admins' {
+    It 'Part 2 - Get-LocalGroupMember returns correct admins' {
       $res = (Get-LocalGroupMember -Group "administrators")
       $res | Should -Contain '507WIN10\Administrator'
       $res | Should -Contain '507WIN10\Student'
     }
 
-    It 'Part 1 - UserRights.psm1 returns admin for debug privilege' {
+    It 'Part 2 - UserRights.psm1 returns admin for debug privilege' {
       Import-Module C:\users\student\AUD507-Labs\scripts\UserRights.psm1
       $res = (Get-AccountsWithUserRight -Right SeDebugPrivilege).account
       $res | Should -Contain 'BUILTIN\Administrators'
+    }
+
+    It 'Part 2 - UserRights.psm1 returns 0 privileges for student' {
+      (Get-UserRightsGrantedToAccount -Account student).Count | Should -Be 0 
+    }
+
+    It 'Part 2 - UserRights.psm1 returns 27 privileges for admins' {
+      (Get-UserRightsGrantedToAccount -Account administrators).Count | Should -Be 27
+    }
+
+    It 'Part 3 - Get-ACL returns numeric ACL' {
+      (Get-Acl c:\windows).AccessToString | Should -BeLike '*268435456*'
+    }
+
+    It 'Part 3 - Get-FileShare returns 2 shares' {
+      $res = (Get-FileShare)
+      $res.Count | Should -Be 2
+      $res.Name | Should -Contain 'ADMIN$'
+      $res.Name | Should -Contain 'C$'
+    }
+    
+    It 'Part 3 - Get-SMBShare returns 2 shares' {
+      $res = (get-SMBShare)
+      $res.Count | Should -Be 3
+      $res.Name | Should -Contain 'ADMIN$'
+      $res.Name | Should -Contain 'C$'
+      $res.Name | Should -Contain 'IPC$'
     }
 
   }

@@ -362,8 +362,28 @@ Describe '507 Labs'{
       Connect-VIServer -Server esxi1 -Credential $vmwareCred
     }
 
-    It 'Get-VM returns 2 VMs' {
+    It 'Part 2 - Get-VM returns 2 VMs' {
       (Get-VM).Count | Should -Be 2
     }
+
+    It 'Part 2 - DNS server settings are correct' {
+      $dnsservers = (Get-VMHost).ExtensionData.Config.Network.DNSConfig |  
+        Select-Object -ExpandProperty address
+      $dnsservers | Should -Contain '8.8.8.8'
+      $dnsservers | Should -NotContain '8.8.4.4'
+    }
+
+    It 'Part 2 - NTP Server is correct' {
+      $ntpServer = (Get-VMHost -Server esxi1 | Get-VMHostNtpServer)
+      $ntpServer | Should -Be 'pool.ntp.org'
+    }
+
+    It 'Part 2 - NTP service state is correct' {
+      $ntpState = (Get-VMHost | Get-VMHostService | Where-Object {$_.key -eq "ntpd"} |
+        Select-Object VMHost, Label, Key, Policy, Running, Required)
+        $ntpState.Policy | Should -Be 'off'
+        $ntpState.Running | Should -Be $false
+        $ntpState.Required | Should -Be $false
+      }
   }
 }

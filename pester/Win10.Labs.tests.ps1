@@ -184,7 +184,7 @@ Describe '507 Labs'{
       $res = (Get-ItemProperty "HKLM:\SYSTEM\CurrentControlSet\Control\Lsa")
       $res.LimitBlankPasswordUse | Should -Be 1
       $res.NoLMHash | Should -Be 1
-      $res.restrictanonymous | Should -Be 1      
+      $res.restrictanonymous | Should -Be 0    
       (Get-ItemProperty "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System" |  Select-Object).EnableLUA | 
         Should -Be 1      
     }

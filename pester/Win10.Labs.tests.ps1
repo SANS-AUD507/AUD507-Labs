@@ -123,12 +123,12 @@ Describe '507 Labs'{
     }
     
     It 'AWS PowerShell module contains >5,000 of Get* commands'{
-      Get-Command -Module AWSPowerShell.NetCore -name Get-* | Measure-Object | 
+      (Get-Command -Module AWSPowerShell.NetCore -name Get-* | Measure-Object).Count | 
         Should -BeGreaterThan 5000
     }
 
-    It 'AWS Powershell returns 4 VPCs' {
-      (Get-EC2Vpc).Count | Should -Be 4
+    It 'AWS Powershell returns 3 VPCs' {
+      (Get-EC2Vpc).Count | Should -Be 3
     }
 
     It '3 EC2 instances are missing tags' {

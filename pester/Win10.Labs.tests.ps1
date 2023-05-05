@@ -112,4 +112,16 @@ Describe '507 Labs'{
     }
   }
 
+  Context 'Lab 1.4 - AWS CLI/PoSh' {
+    It 'aws ec2 with jq returns tags' {
+      $instanceProperties = (aws ec2 describe-instances |
+        jq '[.Reservations[].Instances[0] |
+        { "InstanceId": .InstanceId, "Instancetype": .InstanceType, "Tags":.Tags  }]' |
+        ConvertFrom-Json | Get-Member -type Properties).Name
+        $instanceProperties | Should -Contain 'InstanceId'
+        $instanceProperties | Should -Contain 'Instancetype'
+        $instanceProperties | Should -Contain 'Tags'
+      }
+  }
+
 }

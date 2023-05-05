@@ -14,6 +14,7 @@ Describe '507 Labs'{
 
     #If the AWS config files are not there, then skip the AWS tests
     if( -not ( (Test-Path -Type Leaf -Path C:\users\student\.aws\credentials) -or (Test-Path -Type Leaf -Path C:\users\student\.aws\config) ) ) {
+      Write-Host "Skipping AWS tests because config files do not exist"
       $skipAWS = $true
     }
     else {
@@ -22,6 +23,7 @@ Describe '507 Labs'{
       #Skip the Cloud Services context if there are no good AWS credentials
       $userARN = (Get-STSCallerIdentity).Arn
       if( $userARN -notlike '*student*'){
+        Write-Host "Skipping AWS tests because Get-STSCallerIdentity did not return valid ARN"
         $skipAWS = $true
       }
     }
@@ -29,18 +31,23 @@ Describe '507 Labs'{
     #If the Azure configuration is not there, then skip the Azure tests
     $azSubCount = (Get-Content C:\Users\student\.azure\azureProfile.json | ConvertFrom-Json).Subscriptions.Count
     if( $azSubCount -lt 1) {
+      Write-Host "Skipping Azure tests because config files do not exist"
       $skipAzure = $true
     } 
     else {
-      Write-Host 'Importing AZ Module'
-      Import-Module Az
+      Write-Host 'Importing AZ Accounts module'
+      Import-Module Az.Accounts
+      Write-Host 'Importing AZ Compute module'
+      Import-Module Az.Compute
       if(Get-AzTenant.Name -notlike '*sans*'){
+        Write-Host "Skipping Azure tests because tenant is not correct"
         $skipAzure = $true
       }
     }
 
     #Check if esxi server is reachable
     if( -not (Test-NetConnection -InformationLevel Quiet -ComputerName esxi.5x7.local) ){
+      Write-Host "Skipping ESXi tests because host is unreachable"
       $skipEsxi = $true
     }
     else {

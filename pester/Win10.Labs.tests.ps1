@@ -213,7 +213,7 @@ Describe '507 Labs'{
       ($res | Where-Object Name -like '*mozilla*').Count | Should -Be 0
     }
 
-    It 'Part 3 - InstalledSoftware script does output includes Firefox'{
+    It 'Part 3 - InstalledSoftware script output includes Firefox'{
       $res = C:\users\student\AUD507-Labs\scripts\InstalledSoftware.ps1
       ($res | Where-Object Displayname -like '*mozilla*').Count | Should -BeGreaterOrEqual 1
 
@@ -331,6 +331,7 @@ Describe '507 Labs'{
 
     #Inactive/Active user counts don't really make sense in the lab, so we don't test them
     It 'Part 5 - ADAuditGeneric script returns expected results' {
+      Write-Host "Running AD audit script"
       $res = (C:\Users\student\AUD507-Labs\scripts\ADAuditGeneric.ps1 -Server 507dc -Credential $cred)
       $res.NetBiosName | Should -Be 'AUD507'
       $res.DNSRoot | Should -Be 'AUD507.local'

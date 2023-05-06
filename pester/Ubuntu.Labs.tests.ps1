@@ -26,17 +26,6 @@ Describe '507 Labs'{
       Write-Host "Skipping Azure tests because config files do not exist"
       $skipAzure = $true
     } 
-    else {
-      Write-Host 'Importing AZ Accounts module'
-      Import-Module Az.Accounts
-      Write-Host 'Importing AZ Compute module'
-      Import-Module Az.Compute
-      if((Get-AzTenant).Name -notlike '*sans*'){
-        Write-Host "Skipping Azure tests because tenant is not correct"
-        $skipAzure = $true
-      }
-    }
-
   }
 
   Context 'Lab 1.2' {

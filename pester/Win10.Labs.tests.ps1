@@ -78,7 +78,7 @@ Describe '507 Labs'{
 
   Context 'Lab 1.3 - AWS' -Skip:$skipAWS {
     It 'Part 3 - First user is Amartinez' {
-      $username = ("aws iam list-users --query 'Users[*].{username:UserName}' | jq '.[0].username'" )
+      $username = (aws iam list-users --query 'Users[*].{username:UserName}' | jq '.[0].username' )
       $username | Should -BeLike '*AMartinez*' 
     }
 

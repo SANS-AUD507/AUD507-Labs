@@ -325,8 +325,8 @@ Describe '507 Labs'{
       $userDN = (Get-ADUser -Identity student `
         -Server 507dc -Credential $cred).DistinguishedName
       $res = dsget user "$userDN" -memberof -expand -s 507dc -u student -p Password1
-      $res | SHould -Contain '"CN=Schema Admins,CN=Users,DC=AUD507,DC=local"'
-      $res | SHould -Contain '"CN=Domain Admins,CN=Users,DC=AUD507,DC=local"'
+      $res | Should -Contain '"CN=Schema Admins,CN=Users,DC=AUD507,DC=local"'
+      $res | Should -Contain '"CN=Domain Admins,CN=Users,DC=AUD507,DC=local"'
     }
 
     #Inactive/Active user counts don't really make sense in the lab, so we don't test them

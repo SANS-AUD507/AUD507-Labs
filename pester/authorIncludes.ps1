@@ -12,3 +12,8 @@ function l {(Get-History).CommandLine | Select-Object -Last 1 | clip.exe}
 
 # Set-location as code block 
 function loc { ("```````nSet-Location " + (Get-Location).Path) + "`n``````"| clip.exe }
+
+# To set prompt back to default:
+<#
+function prompt { "PS $($executionContext.SessionState.Path.CurrentLocation)$('>' * ($nestedPromptLevel + 1)) ";}
+#>

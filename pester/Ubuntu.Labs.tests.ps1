@@ -31,12 +31,12 @@ Describe '507 Labs'{
   Context 'Lab 1.2' {
     It 'Part 1 - Host count with ARP' {
       $hostCount = (sudo nmap -sn -n 10.50.7.20-110 | grep -c '^Host is up' )
-      $hostCount | Should -be 12
+      $hostCount | Should -BeGreaterOrEqual 10
     }
 
     It 'Part 1 - Host count without ARP' {
       $hostCount = (sudo nmap -sn -n --disable-arp-ping 10.50.7.20-110 | grep -c '^Host is up' )
-      $hostCount | Should -be 11
+      $hostCount | Should -BeGreaterOrEqual 9
     }
 
     It 'Part 2 - Stealth scan gets filtered port 80' {

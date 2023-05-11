@@ -291,7 +291,9 @@ Describe '507 Labs'{
       $res.Name | Should -Contain 'C$'
       $res.Name | Should -Contain 'IPC$'
     }
-
+  }
+  
+  Context 'Lab 2.3: AWS VPN to DC' -Skip:$skipDC { 
     It 'Part 5 - 1007 AD users returned' {
       (Get-ADUser -Filter * -Server 507dc -Credential $cred).Count | Should -Be 1007
     }

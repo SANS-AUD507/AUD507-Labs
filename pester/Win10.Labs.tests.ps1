@@ -292,8 +292,14 @@ Describe '507 Labs'{
       $res.Name | Should -Contain 'IPC$'
     }
   }
-  
+
   Context 'Lab 2.3: AWS VPN to DC' -Skip:$skipDC { 
+    BeforeAll {
+      $User = "student"
+      $PWord = ConvertTo-SecureString -String "Password1" -AsPlainText -Force
+      $cred = New-Object -TypeName System.Management.Automation.PSCredential -ArgumentList $User, $PWord
+    }
+    
     It 'Part 5 - 1007 AD users returned' {
       (Get-ADUser -Filter * -Server 507dc -Credential $cred).Count | Should -Be 1007
     }

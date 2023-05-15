@@ -40,17 +40,17 @@ Describe '507 Labs'{
     }
 
     It 'Part 2 - Stealth scan gets filtered port 80' {
-      $portCount = ( sudo nmap -sS -p 80 10.50.7.26 | grep -c 'filtered' )
+      $portCount = [int]( sudo nmap -sS -p 80 10.50.7.26 | grep -c 'filtered' )
       $portCount | Should -Be 1
     }
 
     It 'Part 2 - Connect scan gets open port 80' {
-      $portCount = ( sudo nmap -sT -p 80 10.50.7.26 | grep -c 'open' )
+      $portCount = [int]( sudo nmap -sT -p 80 10.50.7.26 | grep -c 'open' )
       $portCount | Should -Be 1
     }
     
     It 'Part 3 - OpenSSH version is 8.9p1' {
-      $portCount = ( sudo nmap -sV -sT -p 22 10.50.7.20-25 | grep -c '8.9p1' )
+      $portCount = [int]( sudo nmap -sV -sT -p 22 10.50.7.20-25 | grep -c '8.9p1' )
       $portCount | Should -Be 6
     }
   

@@ -30,12 +30,12 @@ Describe '507 Labs'{
 
   Context 'Lab 1.2' {
     It 'Part 1 - Host count with ARP' {
-      $hostCount = (sudo nmap -sn -n 10.50.7.20-110 | grep -c '^Host is up' )
+      $hostCount = [int](sudo nmap -sn -n 10.50.7.20-110 | grep -c '^Host is up' )
       $hostCount | Should -BeGreaterOrEqual 10
     }
 
     It 'Part 1 - Host count without ARP' {
-      $hostCount = (sudo nmap -sn -n --disable-arp-ping 10.50.7.20-110 | grep -c '^Host is up' )
+      $hostCount = [int](sudo nmap -sn -n --disable-arp-ping 10.50.7.20-110 | grep -c '^Host is up' )
       $hostCount | Should -BeGreaterOrEqual 9
     }
 

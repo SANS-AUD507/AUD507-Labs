@@ -11,6 +11,8 @@ Describe '507 Labs'{
 
     # Get rid of the known hosts file
     # Remove-Item -Path C:\users\student\.ssh\known_hosts -ErrorAction SilentlyContinue -Force
+    
+    $PSDefaultParameterValues['Test-NetConnection:InformationLevel'] = 'Quiet'
 
     #If the AWS config files are not there, then skip the AWS tests
     if( -not ( (Test-Path -Type Leaf -Path C:\users\student\.aws\credentials) -or (Test-Path -Type Leaf -Path C:\users\student\.aws\config) ) ) {

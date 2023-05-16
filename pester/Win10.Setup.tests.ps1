@@ -8,6 +8,10 @@ $config.Run.Path='.\Win10.Setup.tests.ps1'
 Invoke-Pester -Configuration $config
 #>
 
+BeforeDiscovery {
+  $PSDefaultParameterValues['Test-NetConnection:InformationLevel'] = 'Quiet'
+}
+
 Describe 'Lab Setup tests for 507Win10 VM' {
     
   #Check basic network setup to ensure local and internet connectivity

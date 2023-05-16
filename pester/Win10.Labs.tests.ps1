@@ -20,6 +20,8 @@ Describe '507 Labs'{
     else {
       Write-Host 'Importing AWSPowershell.NetCore'
       Import-Module AWSPowershell.NetCore
+      Write-Host 'Import complete'
+
       #Skip the Cloud Services context if there are no good AWS credentials
       $userARN = (Get-STSCallerIdentity).Arn
       if( $userARN -notlike '*student*'){
@@ -37,8 +39,12 @@ Describe '507 Labs'{
     else {
       Write-Host 'Importing AZ Accounts module'
       Import-Module Az.Accounts
+      Write-Host 'Import complete'
+
       Write-Host 'Importing AZ Compute module'
       Import-Module Az.Compute
+      Write-Host 'Import complete'
+
       if((Get-AzTenant).Name -notlike '*sans*'){
         Write-Host "Skipping Azure tests because tenant is not correct"
         $skipAzure = $true
@@ -53,6 +59,7 @@ Describe '507 Labs'{
     else {
       Write-Host 'Importing PowerCLI'
       Import-Module VMware.PowerCLI
+      Write-Host 'Import complete'
     }
     
 
@@ -74,6 +81,8 @@ Describe '507 Labs'{
     if( -not (Test-NetConnection -ComputerName 10.50.7.23 -Port 80 -InformationLevel Quiet) ){
       $skipWeb = $true
     }
+
+
   }
 
   Context 'Lab 1.3 - AWS' -Skip:$skipAWS {

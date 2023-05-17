@@ -59,7 +59,7 @@ Describe '507 Labs'{
       $skipEsxi = $true
     }
     else {
-      Write-Host 'Importing PowerCLI'
+      Write-Host 'Importing PowerCLI - may be slow!'
       Import-Module VMware.PowerCLI
       Write-Host 'Import complete'
     }

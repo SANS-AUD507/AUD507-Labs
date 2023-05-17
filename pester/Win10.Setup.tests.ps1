@@ -9,6 +9,7 @@ Invoke-Pester -Configuration $config
 #>
 
 BeforeDiscovery {
+  #reduces verbose printing and causes a boolean return value instead of the whole result object
   $PSDefaultParameterValues['Test-NetConnection:InformationLevel'] = 'Quiet'
 }
 
@@ -18,12 +19,12 @@ Describe 'Lab Setup tests for 507Win10 VM' {
   Context 'Network connectivity' {
     It 'Ping 507Ubuntu - HostOnly' {
         $res = Test-NetConnection -ComputerName ubuntu
-        $res.PingSucceeded | Should -BeTrue
+        $res | Should -BeTrue
     }
 
     It 'Ping Google - NAT' {
         $res = Test-NetConnection -ComputerName dns.google
-        $res.PingSucceeded | Should -BeTrue
+        $res | Should -BeTrue
     }
   }
 

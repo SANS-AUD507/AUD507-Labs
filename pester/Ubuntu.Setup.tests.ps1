@@ -10,8 +10,28 @@ Invoke-Pester -Configuration $config
 Describe 'Lab Setup tests for 507Ubuntu VM' {
     BeforeDiscovery {
         #arping is required for testing connectivity to Win10, which has a host firewall
-        sudo apt install -y arping 
-    }
+        sudo apt install -y arping
+
+        #If the AWS config files are not there, then skip the AWS tests
+        if( -not ( (Test-Path -Type Leaf -Path /home/student/.aws/credentials) -or (Test-Path -Type Leaf -Path /home/student/.aws/config) ) ) {
+          $skipAWS = $true
+        }
+        else {
+          #Skip the Cloud Services tests if there are no good AWS credentials
+          $userARN = (aws sts get-caller-identity | jq '.Arn')
+          if( $userARN -notlike '*student*'){
+            $skipAWS = $true
+          }
+        }
+    
+        #If the Azure configuration is not there, then skip the Azure tests
+        $azSubCount = (Get-Content /home/student/.azure/azureProfile.json | ConvertFrom-Json).Subscriptions.Count
+        if( $azSubCount -lt 1) {
+          Write-Host "Skipping Azure tests because config files do not exist"
+          $skipAzure = $true
+        } 
+      }
+    
     
     #Check basic network setup to ensure local and internet connectivity
     Context 'Network connectivity' {
@@ -198,27 +218,28 @@ Describe 'Lab Setup tests for 507Ubuntu VM' {
 
     #Local system checks
     Context 'Local system' {
-        It 'Disk Used < 75%' {
-            $usedPct = [int32](df -h | awk '/ \/$/ { print $5 }' | sed -e 's/%//')
-            $usedPct | should -BeLessThan 75
-        }
+    It 'Disk Used < 75%' {
+        $usedPct = [int32](df -h | awk '/ \/$/ { print $5 }' | sed -e 's/%//')
+        $usedPct | should -BeLessThan 75
+    }
     }
 
     #Check that cloud credenitals/configs can return results
-    Context 'Cloud CLI configuration' {
-        It 'AWS credentials are working' {
-            $arn = aws sts get-caller-identity | awk '/Arn/ {print $2}'
-            $arn | Should -BeLike '*arn*'
+    Context 'Cloud CLI configuration - AWS' -skip:$skipAWS {
+    It 'AWS credentials are working' {
+        $arn = aws sts get-caller-identity | awk '/Arn/ {print $2}'
+        $arn | Should -BeLike '*arn*'
+    }
+
+    It 'AWS config is set to us-east-2 region' {
+        '/home/student/.aws/config' | should -FileContentMatch 'region = us-east-2'
         }
-
-        It 'AWS config is set to us-east-2 region' {
-            '/home/student/.aws/config' | should -FileContentMatch 'region = us-east-2'
-          }
-      
-          It 'AWS config is set to json output' {
-            '/home/student/.aws/config' | should -FileContentMatch 'output = json'
-          }
-
+    
+        It 'AWS config is set to json output' {
+        '/home/student/.aws/config' | should -FileContentMatch 'output = json'
+        }
+    } 
+    Context 'Cloud CLI configuration - Azure' -skip:$skipAzure {
         It 'Azure credentials are working' {
             $username = (az account show | jq '.user.name')
             $username | Should -BeLike '"student@*'

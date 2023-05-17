@@ -42,15 +42,18 @@ Describe 'Lab Setup tests for 507Win10 VM' {
     }
 
     It 'Retire.js' {
-        $plugins.identifier | Should -Contain '@retire.js' 
+        $plugins.identifier | Should -Contain '@retire.js' `
+          -Because "Firefox must have been launched once to load addons. Launch Firefox and re-run the tests."
     }
 
     It 'Wappalyzer' {
-        $plugins.identifier | Should -Contain 'wappalyzer@crunchlabz.com'
+        $plugins.identifier | Should -Contain 'wappalyzer@crunchlabz.com' `
+          -Because "Firefox must have been launched once to load addons. Launch Firefox and re-run the tests."
     }
 
     It 'FoxyProxy' {
-        $plugins.identifier | Should -Contain 'foxyproxy@eric.h.jung'
+        $plugins.identifier | Should -Contain 'foxyproxy@eric.h.jung' `
+          -Because "Firefox must have been launched once to load addons. Launch Firefox and re-run the tests."
     }
   }
 
@@ -61,23 +64,23 @@ Describe 'Lab Setup tests for 507Win10 VM' {
 
     It '507DC is available over VPN' {
         $res = Test-NetConnection -ComputerName 507dc
-        $res.PingSucceeded | Should -BeTrue
+        $res.PingSucceeded | Should -BeTrue -Because "VPN setup from lab 2.3 not correct."
     }
 
     It 'AWS ARN is set' {
-      (Get-STSCallerIdentity).Arn | should -BeLike 'arn*student*'
+      (Get-STSCallerIdentity).Arn | should -BeLike 'arn*student*' -Because 'AWS setup from lab 1.3 not correct'
     }    
       
     It 'AWS config is set to us-east-2 region' {
-      'C:\users\student\.aws\config' | should -FileContentMatch 'region = us-east-2'
+      'C:\users\student\.aws\config' | should -FileContentMatch 'region = us-east-2' -Because 'AWS setup from lab 1.3 not correct'
     }
 
     It 'AWS config is set to json output' {
-      'C:\users\student\.aws\config' | should -FileContentMatch 'output = json'
+      'C:\users\student\.aws\config' | should -FileContentMatch 'output = json' -Because 'AWS setup from lab 1.3 not correct'
     }
 
     It 'Azure account is setup' {
-      (az account show | ConvertFrom-Json).user.name | Should -BeLike 'student@*'
+      (az account show | ConvertFrom-Json).user.name | Should -BeLike 'student@*' -Because 'Azure setup from lab 1.3 not correct'
     }
   }
 }

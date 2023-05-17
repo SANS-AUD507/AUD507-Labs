@@ -11,6 +11,29 @@ Invoke-Pester -Configuration $config
 BeforeDiscovery {
   #reduces verbose printing and causes a boolean return value instead of the whole result object
   $PSDefaultParameterValues['Test-NetConnection:InformationLevel'] = 'Quiet'
+
+  #If the AWS config files are not there, then skip the AWS tests
+  if( -not ( (Test-Path -Type Leaf -Path C:\users\student\.aws\credentials) -or (Test-Path -Type Leaf -Path C:\users\student\.aws\config) ) ) {
+    Write-host "AWS config files are missing. Skipping AWS tests."
+    $skipAWS = $true
+  }
+  else {
+    Write-Host "Importing AWS Module"
+    Import-Module AWSPowershell.NetCore
+    #Skip the Cloud Services context if there are no good AWS credentials
+    $userARN = (Get-STSCallerIdentity).Arn
+    if( $userARN -notlike '*student*'){
+      Write-host "AWS identity does not contain 'student' in username. Skipping AWS tests."
+      $skipAWS = $true
+    }
+  }
+
+  #If the Azure configuration is not there, then skip the Azure tests
+  $azSubCount = (Get-Content c:\users\student\.azure\azureProfile.json | ConvertFrom-Json).Subscriptions.Count
+  if( $azSubCount -lt 1) {
+    Write-Host "Skipping Azure tests because config files do not exist"
+    $skipAzure = $true
+  } 
 }
 
 Describe 'Lab Setup tests for 507Win10 VM' {
@@ -57,7 +80,7 @@ Describe 'Lab Setup tests for 507Win10 VM' {
     }
   }
 
-  Context 'Cloud services' {
+  Context 'Cloud services - AWS' -skip $skipAWS {
     BeforeAll{
       Import-Module AWSPowerShell.NetCore
     }
@@ -70,7 +93,10 @@ Describe 'Lab Setup tests for 507Win10 VM' {
     It 'AWS ARN is set' {
       (Get-STSCallerIdentity).Arn | should -BeLike 'arn*student*' -Because 'AWS setup from lab 1.3 not correct'
     }    
-      
+  }
+
+  Context 'Cloud services - Azure' -Skip $skipAzure {
+
     It 'AWS config is set to us-east-2 region' {
       'C:\users\student\.aws\config' | should -FileContentMatch 'region = us-east-2' -Because 'AWS setup from lab 1.3 not correct'
     }

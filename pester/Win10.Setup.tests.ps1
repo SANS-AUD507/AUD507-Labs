@@ -51,6 +51,7 @@ BeforeDiscovery {
       Write-Host "Skipping Azure tests because tenant is not correct"
       $skipAzure = $true
     }
+  }
 }
 
 Describe 'Lab Setup tests for 507Win10 VM' {

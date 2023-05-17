@@ -14,12 +14,14 @@ Describe 'Lab Setup tests for 507Ubuntu VM' {
 
         #If the AWS config files are not there, then skip the AWS tests
         if( -not ( (Test-Path -Type Leaf -Path /home/student/.aws/credentials) -or (Test-Path -Type Leaf -Path /home/student/.aws/config) ) ) {
+          Write-Host "Skipping AWS tests because config files do not exist"
           $skipAWS = $true
         }
         else {
           #Skip the Cloud Services tests if there are no good AWS credentials
           $userARN = (aws sts get-caller-identity | jq '.Arn')
           if( $userARN -notlike '*student*'){
+            Write-Host "Skipping AWS tests because config files do not exist"
             $skipAWS = $true
           }
         }

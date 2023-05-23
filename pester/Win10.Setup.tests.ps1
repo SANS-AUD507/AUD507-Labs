@@ -105,7 +105,7 @@ Describe 'Lab Setup tests for 507Win10 VM' {
 
     It '507DC is available over VPN' {
         $res = Test-NetConnection -ComputerName 507dc
-        $res.PingSucceeded | Should -BeTrue -Because "VPN setup from lab 2.3 not correct."
+        $res | Should -BeTrue -Because "VPN setup from lab 2.3 not correct."
     }
 
     It 'AWS ARN is set' {

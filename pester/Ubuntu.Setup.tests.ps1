@@ -26,14 +26,18 @@ Describe 'Lab Setup tests for 507Ubuntu VM' {
       }
     }
 
-    #If the Azure configuration is not there, then skip the Azure tests
-    $azSubCount = (Get-Content /home/student/.azure/azureProfile.json | ConvertFrom-Json).Subscriptions.Count
-    if( $azSubCount -lt 1) {
-      Write-Host "Skipping Azure tests because config files do not exist"
-      $skipAzure = $true
-    } 
+    #If the Azure configuration is not there or not complete, then skip the Azure tests
+    if( -not (Test-Path -Type Leaf -Path /home/student/.azure/azureProfile.json) ) {
+        $skipAzure = $true
+    }
+    else {
+        $azSubCount = (Get-Content /home/student/.azure/azureProfile.json | ConvertFrom-Json).Subscriptions.Count
+        if( $azSubCount -lt 1) {
+            Write-Host "Skipping Azure tests because config files do not exist"
+            $skipAzure = $true
+        } 
+    }
   }
-
   
   #Check basic network setup to ensure local and internet connectivity
   Context 'Network connectivity' {

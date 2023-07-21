@@ -11,8 +11,6 @@ BeforeDiscovery {
   #reduces verbose printing and causes a boolean return value instead of the whole result object
   $PSDefaultParameterValues['Test-NetConnection:InformationLevel'] = 'Quiet'
 
-  $PSDefaultParameterValues['Test-NetConnection:InformationLevel'] = 'Quiet'
-
   #If the AWS config files are not there, then skip the AWS tests
   if( -not ( (Test-Path -Type Leaf -Path C:\users\student\.aws\credentials) -or (Test-Path -Type Leaf -Path C:\users\student\.aws\config) ) ) {
     Write-Host "Skipping AWS tests because config files do not exist"

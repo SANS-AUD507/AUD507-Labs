@@ -12,7 +12,7 @@ BeforeDiscovery {
   $PSDefaultParameterValues['Test-NetConnection:InformationLevel'] = 'Quiet'
 
   #If the AWS config files are not there, then skip the AWS tests
-  if( -not ( (Test-Path -Type Leaf -Path C:\users\student\.aws\credentials) -or (Test-Path -Type Leaf -Path C:\users\student\.aws\config) ) ) {
+  if ( -not ( (Test-Path -Type Leaf -Path C:\users\student\.aws\credentials) -or (Test-Path -Type Leaf -Path C:\users\student\.aws\config) ) ) {
     Write-Host "Skipping AWS tests because config files do not exist"
     $skipAWS = $true
   }
@@ -23,7 +23,7 @@ BeforeDiscovery {
 
     #Skip the Cloud Services context if there are no good AWS credentials
     $userARN = (Get-STSCallerIdentity).Arn
-    if( $userARN -notlike '*student*'){
+    if ( $userARN -notlike '*student*') {
       Write-Host "Skipping AWS tests because Get-STSCallerIdentity did not return valid ARN"
       $skipAWS = $true
     }
@@ -31,7 +31,7 @@ BeforeDiscovery {
 
   #If the Azure configuration is not there, then skip the Azure tests
   $azSubCount = (Get-Content C:\Users\student\.azure\azureProfile.json | ConvertFrom-Json).Subscriptions.Count
-  if( $azSubCount -lt 1) {
+  if ( $azSubCount -lt 1) {
     Write-Host "Skipping Azure tests because config files do not exist"
     $skipAzure = $true
   } 
@@ -44,7 +44,7 @@ BeforeDiscovery {
     Import-Module Az.Compute
     Write-Host 'Import complete'
 
-    if((Get-AzTenant).Name -notlike '*sans*'){
+    if ((Get-AzTenant).Name -notlike '*sans*') {
       Write-Host "Skipping Azure tests because tenant is not correct"
       $skipAzure = $true
     }
@@ -56,19 +56,19 @@ Describe 'Lab Setup tests for 507Win10 VM' {
   #Check basic network setup to ensure local and internet connectivity
   Context 'Network connectivity' {
     It 'Ping 507Ubuntu - HostOnly' {
-        $res = Test-NetConnection -ComputerName ubuntu
-        $res | Should -BeTrue -Because 'Ensure that second network adapter is set to Host-only'
+      $res = Test-NetConnection -ComputerName ubuntu
+      $res | Should -BeTrue -Because 'Ensure that second network adapter is set to Host-only'
     }
 
     It 'Ping Google - NAT' {
-        $res = Test-NetConnection -ComputerName dns.google
-        $res | Should -BeTrue -Because 'Ensure that first network adapter is set to NAT'
+      $res = Test-NetConnection -ComputerName www.google.com
+      $res | Should -BeTrue -Because 'Ensure that first network adapter is set to NAT'
     }
   }
 
   Context 'Local system checks' {
     It 'Drive free space > 10GB' {
-        (Get-PSDrive -name c).Free | Should -BeGreaterThan 10000000000 -Because 'VM disk is low on space'
+        (Get-PSDrive -Name c).Free | Should -BeGreaterThan 10000000000 -Because 'VM disk is low on space'
     }
   }
 
@@ -76,48 +76,48 @@ Describe 'Lab Setup tests for 507Win10 VM' {
   #the polices.json file processed.
   Context 'Firefox plugins' {
     BeforeAll {
-        $plugins = osqueryi "select * from firefox_addons;" --json 2>$null | ConvertFrom-Json
+      $plugins = osqueryi "select * from firefox_addons;" --json 2>$null | ConvertFrom-Json
     }
 
     It 'Retire.js' {
-        $plugins.identifier | Should -Contain '@retire.js' `
-          -Because "Firefox must have been launched once to load addons. Launch Firefox and re-run the tests."
+      $plugins.identifier | Should -Contain '@retire.js' `
+        -Because "Firefox must have been launched once to load addons. Launch Firefox and re-run the tests."
     }
 
     It 'Wappalyzer' {
-        $plugins.identifier | Should -Contain 'wappalyzer@crunchlabz.com' `
-          -Because "Firefox must have been launched once to load addons. Launch Firefox and re-run the tests."
+      $plugins.identifier | Should -Contain 'wappalyzer@crunchlabz.com' `
+        -Because "Firefox must have been launched once to load addons. Launch Firefox and re-run the tests."
     }
 
     It 'FoxyProxy' {
-        $plugins.identifier | Should -Contain 'foxyproxy@eric.h.jung' `
-          -Because "Firefox must have been launched once to load addons. Launch Firefox and re-run the tests."
+      $plugins.identifier | Should -Contain 'foxyproxy@eric.h.jung' `
+        -Because "Firefox must have been launched once to load addons. Launch Firefox and re-run the tests."
     }
   }
 
-  Context 'Cloud services - AWS' -skip:$skipAWS {
-    BeforeAll{
+  Context 'Cloud services - AWS' -Skip:$skipAWS {
+    BeforeAll {
       Import-Module AWSPowerShell.NetCore
     }
 
     It '507DC is available over VPN' {
-        $res = Test-NetConnection -ComputerName 507dc
-        $res | Should -BeTrue -Because "VPN setup from lab 2.3 not correct."
+      $res = Test-NetConnection -ComputerName 507dc
+      $res | Should -BeTrue -Because "VPN setup from lab 2.3 not correct."
     }
 
     It 'AWS ARN is set' {
-      (Get-STSCallerIdentity).Arn | should -BeLike 'arn*student*' -Because 'AWS setup from lab 1.3 not correct'
+      (Get-STSCallerIdentity).Arn | Should -BeLike 'arn*student*' -Because 'AWS setup from lab 1.3 not correct'
     }    
   }
 
   Context 'Cloud services - Azure' -Skip:$skipAzure {
 
     It 'AWS config is set to us-east-2 region' {
-      'C:\users\student\.aws\config' | should -FileContentMatch 'region = us-east-2' -Because 'AWS setup from lab 1.3 not correct'
+      'C:\users\student\.aws\config' | Should -FileContentMatch 'region = us-east-2' -Because 'AWS setup from lab 1.3 not correct'
     }
 
     It 'AWS config is set to json output' {
-      'C:\users\student\.aws\config' | should -FileContentMatch 'output = json' -Because 'AWS setup from lab 1.3 not correct'
+      'C:\users\student\.aws\config' | Should -FileContentMatch 'output = json' -Because 'AWS setup from lab 1.3 not correct'
     }
 
     It 'Azure account is setup' {

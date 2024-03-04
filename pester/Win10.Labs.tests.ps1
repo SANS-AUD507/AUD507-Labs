@@ -7,7 +7,7 @@ $config.Run.Path='.\Win10.Labs.tests.ps1'
 Invoke-Pester -Configuration $config
 #>
 
-Describe '507 Labs'{
+Describe '507 Labs' {
   BeforeDiscovery {
 
     # Get rid of the known hosts file
@@ -16,7 +16,7 @@ Describe '507 Labs'{
     $PSDefaultParameterValues['Test-NetConnection:InformationLevel'] = 'Quiet'
 
     #If the AWS config files are not there, then skip the AWS tests
-    if( -not ( (Test-Path -Type Leaf -Path C:\users\student\.aws\credentials) -or (Test-Path -Type Leaf -Path C:\users\student\.aws\config) ) ) {
+    if ( -not ( (Test-Path -Type Leaf -Path C:\users\student\.aws\credentials) -or (Test-Path -Type Leaf -Path C:\users\student\.aws\config) ) ) {
       Write-Host "Skipping AWS tests because config files do not exist"
       $skipAWS = $true
     }
@@ -27,7 +27,7 @@ Describe '507 Labs'{
 
       #Skip the Cloud Services context if there are no good AWS credentials
       $userARN = (Get-STSCallerIdentity).Arn
-      if( $userARN -notlike '*student*'){
+      if ( $userARN -notlike '*student*') {
         Write-Host "Skipping AWS tests because Get-STSCallerIdentity did not return valid ARN"
         $skipAWS = $true
       }
@@ -35,7 +35,7 @@ Describe '507 Labs'{
 
     #If the Azure configuration is not there, then skip the Azure tests
     $azSubCount = (Get-Content C:\Users\student\.azure\azureProfile.json | ConvertFrom-Json).Subscriptions.Count
-    if( $azSubCount -lt 1) {
+    if ( $azSubCount -lt 1) {
       Write-Host "Skipping Azure tests because config files do not exist"
       $skipAzure = $true
     } 
@@ -48,14 +48,14 @@ Describe '507 Labs'{
       Import-Module Az.Compute
       Write-Host 'Import complete'
 
-      if((Get-AzTenant).Name -notlike '*sans*'){
+      if ((Get-AzTenant).Name -notlike '*sans*') {
         Write-Host "Skipping Azure tests because tenant is not correct"
         $skipAzure = $true
       }
     }
 
     #Check if esxi server is reachable
-    if( -not (Test-NetConnection -InformationLevel Quiet -ComputerName esxi.5x7.local) ){
+    if ( -not (Test-NetConnection -InformationLevel Quiet -ComputerName esxi.5x7.local) ) {
       Write-Host "Skipping ESXi tests because host is unreachable"
       $skipEsxi = $true
     }
@@ -67,7 +67,7 @@ Describe '507 Labs'{
     
 
     #Check if alma is reachable
-    if( -not (Test-NetConnection -InformationLevel Quiet -ComputerName alma.5x7.local) ){
+    if ( -not (Test-NetConnection -InformationLevel Quiet -ComputerName alma.5x7.local) ) {
       Write-Host "Skipping alma tests because host is unreachable"
       $skipAlma = $true
     }
@@ -76,12 +76,12 @@ Describe '507 Labs'{
     }
 
     #Check if the DC is available
-    if( -not (Test-NetConnection -InformationLevel Quiet -ComputerName 507dc.5x7.local) ){
+    if ( -not (Test-NetConnection -InformationLevel Quiet -ComputerName 507dc.5x7.local) ) {
       $skipDC = $true
     }
 
     #Check if the web server is available
-    if( -not (Test-NetConnection -ComputerName 10.50.7.23 -Port 80 -InformationLevel Quiet) ){
+    if ( -not (Test-NetConnection -ComputerName 10.50.7.23 -Port 80 -InformationLevel Quiet) ) {
       $skipWeb = $true
     }
 
@@ -122,23 +122,23 @@ Describe '507 Labs'{
   }
 
   Context 'Lab 1.3 - Azure' -Skip:$skipAzure {
-    It 'Part 6 - Get-AZVM returns results'{
+    It 'Part 6 - Get-AZVM returns results' {
       (Get-AzVM).Count | Should -BeGreaterOrEqual 3
     }
 
     It 'Part 6 - jq processes az vm output' {
       $azvm = (az vm list)
       $prop = (($azvm | jq '[ .[] | { vmname: .name, os: .storageProfile.osDisk.osType, vmsize: .hardwareProfile.vmSize, tags: .tags }]' | 
-        ConvertFrom-Json) | Get-Member -Type Properties).Name
-        $prop | Should -Contain 'os'
-        $prop | Should -Contain 'tags'
-        $prop | Should -Contain 'vmname'
-        $prop | Should -Contain 'vmsize'
-      }
+            ConvertFrom-Json) | Get-Member -Type Properties).Name
+      $prop | Should -Contain 'os'
+      $prop | Should -Contain 'tags'
+      $prop | Should -Contain 'vmname'
+      $prop | Should -Contain 'vmsize'
+    }
 
     It 'Part 7 - Powershell converts JSON correctly' {
       $azvm = (az vm list)
-      (($azvm | ConvertFrom-Json) | Where-Object Name -like '*aud507*').Count | 
+      (($azvm | ConvertFrom-Json) | Where-Object Name -Like '*aud507*').Count | 
         Should -BeGreaterOrEqual 3
     }
   }
@@ -146,15 +146,15 @@ Describe '507 Labs'{
   Context 'Lab 1.4 - AWS CLI/PoSh' {
     It 'Part 2 - aws ec2 with jq returns tags' {
       $instanceProperties = (aws ec2 describe-instances |
-        jq '[.Reservations[].Instances[0] | { "InstanceId": .InstanceId, "Instancetype": .InstanceType, "Tags":.Tags  }]' |
-        ConvertFrom-Json | Get-Member -type Properties).Name
-        $instanceProperties | Should -Contain 'InstanceId'
-        $instanceProperties | Should -Contain 'Instancetype'
-        $instanceProperties | Should -Contain 'Tags'
+          jq '[.Reservations[].Instances[0] | { "InstanceId": .InstanceId, "Instancetype": .InstanceType, "Tags":.Tags  }]' |
+          ConvertFrom-Json | Get-Member -type Properties).Name
+      $instanceProperties | Should -Contain 'InstanceId'
+      $instanceProperties | Should -Contain 'Instancetype'
+      $instanceProperties | Should -Contain 'Tags'
     }
     
-    It 'Part 2 - AWS PowerShell module contains >5,000 of Get* commands'{
-      (Get-Command -Module AWSPowerShell.NetCore -name Get-* | Measure-Object).Count | 
+    It 'Part 2 - AWS PowerShell module contains >5,000 of Get* commands' {
+      (Get-Command -Module AWSPowerShell.NetCore -Name Get-* | Measure-Object).Count | 
         Should -BeGreaterThan 5000
     }
 
@@ -163,13 +163,13 @@ Describe '507 Labs'{
     }
 
     It 'Part 2 - 3 EC2 instances are missing tags' {
-      (Get-EC2Instance |  Where-Object { ($_.Instances.tags | Where-Object Key -eq 'Business_Unit').Count -lt 1 }).instances.Count | 
+      (Get-EC2Instance | Where-Object { ($_.Instances.tags | Where-Object Key -EQ 'Business_Unit').Count -lt 1 }).instances.Count | 
         Should -Be 3
     }
   }
 
   Context 'Lab 1.4 - Azure' {
-    BeforeAll{
+    BeforeAll {
       #ensure the resource graph extension and module are installed
       az extension add --name resource-graph
       Import-Module Az.ResourceGraph
@@ -196,7 +196,7 @@ Describe '507 Labs'{
     }
 
     It 'Part 2 - Student is only enabled user' {
-      $enabledUsers = (Get-LocalUser | Where-Object enabled -eq $true)
+      $enabledUsers = (Get-LocalUser | Where-Object enabled -EQ $true)
       $enabledUsers.Count | Should -Be 1
       $enabledUsers.Name | Should -Contain 'student'
     }
@@ -216,23 +216,23 @@ Describe '507 Labs'{
       $res.LimitBlankPasswordUse | Should -Be 1
       $res.NoLMHash | Should -Be 1
       $res.restrictanonymous | Should -Be 0    
-      (Get-ItemProperty "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System" |  Select-Object).EnableLUA | 
+      (Get-ItemProperty "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System" | Select-Object).EnableLUA | 
         Should -Be 1      
     }
 
-    It 'Part 3 - Firefox not in the Win32_Product list'{
+    It 'Part 3 - Firefox not in the Win32_Product list' {
       $res = (Get-CimInstance Win32_Product | Select-Object Name, Version )
-      ($res | Where-Object Name -like '*mozilla*').Count | Should -Be 0
+      ($res | Where-Object Name -Like '*mozilla*').Count | Should -Be 0
     }
 
-    It 'Part 3 - InstalledSoftware script output includes Firefox'{
+    It 'Part 3 - InstalledSoftware script output includes Firefox' {
       $res = C:\users\student\AUD507-Labs\scripts\InstalledSoftware.ps1
-      ($res | Where-Object Displayname -like '*mozilla*').Count | Should -BeGreaterOrEqual 1
+      ($res | Where-Object Displayname -Like '*mozilla*').Count | Should -BeGreaterOrEqual 1
 
     }
 
     It 'Part 5 - OSQuery returns Firefox' {
-      $res = osqueryi.exe "select name, version, install_date from programs;" --json | ConvertFrom-Json | Where-Object Name -like '*mozilla*'
+      $res = osqueryi.exe "select name, version, install_date from programs;" --json | ConvertFrom-Json | Where-Object Name -Like '*mozilla*'
       $res.Count | Should -BeGreaterOrEqual 1
     }
 
@@ -297,7 +297,7 @@ Describe '507 Labs'{
     }
     
     It 'Part 3 - Get-SMBShare returns 2 shares' {
-      $res = (get-SMBShare)
+      $res = (Get-SmbShare)
       $res.Count | Should -Be 3
       $res.Name | Should -Contain 'ADMIN$'
       $res.Name | Should -Contain 'C$'
@@ -317,12 +317,12 @@ Describe '507 Labs'{
     }
 
     It 'Part 5 - 2 users without password required' {
-      (Get-ADUser -Filter {PasswordNotRequired -eq $true} `
+      (Get-ADUser -Filter { PasswordNotRequired -eq $true } `
         -Server 507dc -Credential $cred).Count | Should -Be 2
     }
 
     It 'Part 5 - 9 users without password expiration' {
-      (Get-ADUser -Filter {PasswordNotRequired -eq $true} `
+      (Get-ADUser -Filter { PasswordNotRequired -eq $true } `
         -Server 507dc -Credential $cred).Count | Should -Be 2
     }
 
@@ -333,7 +333,7 @@ Describe '507 Labs'{
 
     It 'Part 5 - 71 domain admins with recursion' {
       (Get-ADGroupMember -Identity "Domain Admins" `
-      -Server 507dc -Credential $cred -Recursive).Count | Should -Be 71
+        -Server 507dc -Credential $cred -Recursive).Count | Should -Be 71
     }
 
     It 'Part 5 - Student is a domain admin' {
@@ -343,7 +343,7 @@ Describe '507 Labs'{
 
     It 'Part 5 - DSGet shows student in Schema Admins' {
       $userDN = (Get-ADUser -Identity student `
-        -Server 507dc -Credential $cred).DistinguishedName
+          -Server 507dc -Credential $cred).DistinguishedName
       $res = dsget user "$userDN" -memberof -expand -s 507dc -u student -p Password1
       $res | Should -Contain '"CN=Schema Admins,CN=Users,DC=AUD507,DC=local"'
       $res | Should -Contain '"CN=Domain Admins,CN=Users,DC=AUD507,DC=local"'
@@ -360,7 +360,9 @@ Describe '507 Labs'{
       $res.EnabledUsers | Should -Be 996 
       $res.DisabledUsers | Should -Be 11
       $res.TotalUsers | Should -Be 1007
-      $res.StalePasswordUsers | Should -Be 0
+      #In the OD course, the users may have been around long enough to go stale,
+      #so there should be 0 or 996 stale users
+      $res.StalePasswordUsers % 996 | Should -Be 0
       $res.DomainAdmins | Should -Be 71
       $res.SchemaAdmins | Should -Be 71
       $res.EnterpriseAdmins | Should -Be 1
@@ -395,7 +397,7 @@ Describe '507 Labs'{
 
     It 'Part 2 - DNS server settings are correct' {
       $dnsservers = ((Get-VMHost).ExtensionData.Config.Network.DNSConfig |  
-        Select-Object -ExpandProperty address)
+          Select-Object -ExpandProperty address)
       $dnsservers | Should -Contain '8.8.8.8'
       $dnsservers | Should -Not -Contain '8.8.4.4'
     }
@@ -406,11 +408,11 @@ Describe '507 Labs'{
     }
 
     It 'Part 2 - NTP service state is correct' {
-      $ntpState = (Get-VMHost | Get-VMHostService | Where-Object {$_.key -eq "ntpd"} |
-        Select-Object VMHost, Label, Key, Policy, Running, Required)
-        $ntpState.Policy | Should -Be 'off'
-        $ntpState.Running | Should -Be $false
-        $ntpState.Required | Should -Be $false
+      $ntpState = (Get-VMHost | Get-VMHostService | Where-Object { $_.key -eq "ntpd" } |
+          Select-Object VMHost, Label, Key, Policy, Running, Required)
+      $ntpState.Policy | Should -Be 'off'
+      $ntpState.Running | Should -Be $false
+      $ntpState.Required | Should -Be $false
     }
 
     It 'Part 2 - Datastore version is > 6' {
@@ -432,20 +434,20 @@ Describe '507 Labs'{
     }
 
     It 'Part 1 - GLee has 2 keys' {
-      $userName  = (Get-IAMUserList | Where-Object UserName -like 'GLee*').UserName
+      $userName = (Get-IAMUserList | Where-Object UserName -Like 'GLee*').UserName
       $keyCount = (Get-IAMAccessKey -UserName $userName).Count
       $keyCount | Should -Be 2
     }
 
     It 'Part 1 - JAllen has AWSSupportAccess policy attached' {
-      $userName = (Get-IAMUserList | Where-Object username -like 'JAllen*').UserName
+      $userName = (Get-IAMUserList | Where-Object username -Like 'JAllen*').UserName
       $res = (Get-IAMAttachedUserPolicies -UserName $userName)
       $res.Count | Should -Be 1
       $res[0].PolicyName | Should -Be 'AWSSupportAccess'
     }
 
     It 'Part 1 - Walexander has inline policy' {
-      $userName = (Get-IAMUserList | Where-Object username -like 'Walexander*').UserName
+      $userName = (Get-IAMUserList | Where-Object username -Like 'Walexander*').UserName
       $res = (Get-IAMUserPolicies -UserName $userName)
       $res.Count | Should -Be 1
     }
@@ -454,18 +456,18 @@ Describe '507 Labs'{
   Context 'Lab 4.4' {
     It 'Part 4 - 4 buckets have server side encryption enabled' {
       $res = ((Get-S3Bucket | Get-S3BucketEncryption).ServerSideEncryptionRules | 
-        Where-Object ServerSideEncryptionByDefault -ne $null)
+          Where-Object ServerSideEncryptionByDefault -NE $null)
       $res.Count | Should -Be 4
     }
 
     It 'Part 4 - 4 buckets have versioning turned off' {
-      $res = (Get-S3Bucket | Get-S3BucketVersioning | Where-Object Status -eq 'Off')
+      $res = (Get-S3Bucket | Get-S3BucketVersioning | Where-Object Status -EQ 'Off')
       $res.Count | Should -Be 4
     }
 
     
     It 'Part 4 - 4 buckets have MFA Delete turned off' {
-      $res = (Get-S3Bucket | Get-S3BucketVersioning | Where-Object EnableMfaDelete -eq $false)
+      $res = (Get-S3Bucket | Get-S3BucketVersioning | Where-Object EnableMfaDelete -EQ $false)
       $res.Count | Should -Be 4
     }
   }
